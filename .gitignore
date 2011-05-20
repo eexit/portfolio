@@ -1,2 +1,4 @@
 dev.photo.eexit.tmproj
 log/portfolio.log
+cache/
+vendor/Silex/
