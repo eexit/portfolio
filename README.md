@@ -7,8 +7,8 @@ Vous pourrez trouver plus d'informations sur [la page d'introduction](http://blo
 ## Roadmap
 
 1. [Pré-requis et architecture](http://blog.eexit.net/2011/05/php-projet-silex-presentation-pre-requis-et-architecture.html#start)
-2. Configuration de Silex
-3. Jouons avec Silex
+2. [Configuration de Silex](http://blog.eexit.net/2011/05/php-projet-silex-configuration-de-silex.html#config)
+3. [Jouons avec Silex](http://blog.eexit.net/2011/06/php-projet-silex-jouons-avec-silex.html#play)
 4. Ecriture de tests fonctionnels
 5. TDD pour le code métier
 6. Templating
