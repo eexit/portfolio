@@ -11,17 +11,23 @@ class AppTreeTest extends WebTestCase
     
     public function testIndex()
     {
-        $this->markTestIncomplete('Not yet implemented');
+        $client = $this->createClient();
+        $client->request('GET', '/');
+        $this->assertTrue($client->getResponse()->isOk());
     }
     
     public function testAbout()
     {
-        $this->markTestIncomplete('Not yet implemented');
+        $client = $this->createClient();
+        $client->request('GET', '/about');
+        $this->assertTrue($client->getResponse()->isOk());
     }
     
     public function testCollection()
     {
-        $this->markTestIncomplete('Not yet implemented');
+        $client = $this->createClient();
+        $client->request('GET', '/collections');
+        $this->assertTrue($client->getResponse()->isOk());
     }
     
     public function testGallery()
