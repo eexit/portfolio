@@ -40,5 +40,21 @@ $app->get('/', function() use ($app) {
     ));
 });
 
+$app->get('/about.html', function() use ($app) {
+    return $app['twig']->render('about.twig');
+});
+
+$app->get('/sets.html', function() use ($app) {
+    return $app['twig']->render('sets.twig');
+});
+
+$app->get('/{set}.html', function($set) use ($app) {
+    return $app->escape($set);
+});
+
+$app->get('/{set}/{gallery}.html', function($set, $gallery) use ($app) {
+    return $app->escape($set) . '/' . $app->escape($gallery);
+});
+
 return $app;
 ?>
