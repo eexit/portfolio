@@ -35,13 +35,15 @@ $app->error(function(\Exception $e) use ($app) {
 });
 
 $app->get('/', function() use ($app) {
-    return $app['twig']->render('index.twig', array(
-        'hello' => 'Hello world!'
-    ));
+    return $app['twig']->render('index.twig');
 });
 
 $app->get('/about.html', function() use ($app) {
     return $app['twig']->render('about.twig');
+});
+
+$app->get('/contact.html', function() use ($app) {
+    return $app['twig']->render('contact.twig');
 });
 
 $app->get('/sets.html', function() use ($app) {
