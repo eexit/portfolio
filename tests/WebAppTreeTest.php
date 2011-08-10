@@ -4,16 +4,39 @@ use Silex\WebTestCase;
 
 class WebAppTreeTest extends WebTestCase
 {
+    const NB_LINKS_LAYOUT = 4;
+    
     public function createApplication()
     {
         return require __DIR__ . '/../src/portfolio.php';
     }
     
+    public function testLayoutElements()
+    {
+        $client = $this->createClient();
+        $crawler = $client->request('GET', '/');
+        $this->assertEquals(1, $crawler->filter('title:contains("Portfolio")')->count());
+        $this->assertEquals(1, $crawler->filter('meta[http-equiv="content-type"]')->count());
+        $this->assertEquals(1, $crawler->filter('meta[charset]')->count());
+        $this->assertEquals(1, $crawler->filter('meta[name="author"]')->count());
+        $this->assertEquals(1, $crawler->filter('meta[name="description"]')->count());
+        $this->assertEquals(3, $crawler->filter('head > link')->count());
+        $this->assertEquals(3, $crawler->filter('header > nav > ul > li')->count());
+        $this->assertEquals(1, $crawler->filter('footer')->count());
+        $this->assertEquals(self::NB_LINKS_LAYOUT, count($crawler->filter('a')->links()));
+        
+        // Tests the eexit.net back link
+        $client->click($crawler->selectLink('eexit.net')->link());
+        $this->assertTrue($client->getResponse()->isOk());
+        $this->assertEquals('http://www.eexit.net/', $client->getRequest()->getUri());
+    }
+    
     public function testGetIndex()
     {
         $client = $this->createClient();
-        $client->request('GET', '/');
+        $crawler = $client->request('GET', '/');
         $this->assertTrue($client->getResponse()->isOk());
+        $this->assertTrue(1 == $crawler->filter('h1:contains("Portfolio")')->count());
     }
     
     public function testGetAbout()
