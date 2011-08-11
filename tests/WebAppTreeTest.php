@@ -15,6 +15,9 @@ class WebAppTreeTest extends WebTestCase
     {
         $client = $this->createClient();
         $crawler = $client->request('GET', '/');
+        $this->assertTrue($client->getResponse()->isOk());
+        
+        // DOM validation
         $this->assertEquals(1, $crawler->filter('title:contains("Portfolio")')->count());
         $this->assertEquals(1, $crawler->filter('meta[http-equiv="content-type"]')->count());
         $this->assertEquals(1, $crawler->filter('meta[charset]')->count());
@@ -36,6 +39,8 @@ class WebAppTreeTest extends WebTestCase
         $client = $this->createClient();
         $crawler = $client->request('GET', '/');
         $this->assertTrue($client->getResponse()->isOk());
+        
+        // DOM validation
         $this->assertTrue(1 == $crawler->filter('h1:contains("Portfolio")')->count());
     }
     
@@ -44,6 +49,22 @@ class WebAppTreeTest extends WebTestCase
         $client = $this->createClient();
         $client->request('GET', '/about.html');
         $this->assertTrue($client->getResponse()->isOk());
+    }
+    
+    public function testGetContact()
+    {
+        $client = $this->createClient();
+        $crawler = $client->request('GET', '/contact.html');
+        $this->assertTrue($client->getResponse()->isOk());
+        
+        // DOM validation
+        $this->assertEquals(1, $crawler->filter('h1')->count());
+        $this->assertEquals(1, $crawler->filter('form[action][method="post"]')->count());
+        $this->assertEquals(1, $crawler->filter('input[type="text"]')->count());
+        $this->assertEquals(1, $crawler->filter('input[type="email"]')->count());
+        $this->assertEquals(1, $crawler->filter('input[type="submit"]')->count());
+        $this->assertEquals(1, $crawler->filter('textarea[rows][cols]')->count());
+        $this->assertEquals(3, $crawler->filter('label')->count());
     }
     
     public function testGetSets()

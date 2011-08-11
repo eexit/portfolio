@@ -39,7 +39,7 @@ $app->error(function(\Exception $e) use ($app) {
     }
     
     if ($e instanceof HttpException) {
-        return new Response('<p>You should go eat some cookies while we\'re fixing this feature!', $e->getStatusCode());
+        return new Response('<h1>Oops!</h1><h2>Something went wrong...</h2><p>You should go eat some cookies while we\'re fixing this feature!</p>', $e->getStatusCode());
     }
 });
 

@@ -1,5 +1,11 @@
 {% extends 'layout.twig' %}
 
 {% block body %}
-<p>Hello world!</p>
+<h1>Drop me a note</h1>
+<form method="post" action="/contact.html">
+    <label>Name: <input type="text" name="name" value="{{ post.name }}" /></label>
+    <label>Email: <input type="email" name="email" value="{{ post.email }}" /></label>
+    <label>Message: <textarea cols="40" rows="10" name="message">{{ post.message }}</textarea></label>
+    <input type="submit" value="Send" />
+</form>
 {% endblock %}
