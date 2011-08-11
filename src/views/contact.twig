@@ -2,6 +2,13 @@
 
 {% block body %}
 <h1>Drop me a note</h1>
+{% if violations %}
+    <ul class="warning">
+        {% for field, message in violations %}
+            <li>{{ field|title }} field raised: {{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 <form method="post" action="/contact.html">
     <label>Name: <input type="text" name="name" value="{{ post.name }}" /></label>
     <label>Email: <input type="email" name="email" value="{{ post.email }}" /></label>

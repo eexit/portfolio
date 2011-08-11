@@ -59,6 +59,45 @@ $app->get('/contact.html', function() use ($app) {
     return $app['twig']->render('contact.twig');
 });
 
+$app->post('/contact.html', function() use ($app) {
+   $request = $app['request'];
+   $validator = $app['validator'];
+   $field_constraints = array(
+        'name'      => array(
+            new Constraints\NotBlank(),
+            new Constraints\MinLength(3)
+        ),
+        'email'     => array(
+            new Constraints\NotBlank(),
+            new Constraints\Email()
+        ),
+        'message'   => array(
+            new Constraints\NotBlank()
+        )
+   );
+   
+   foreach ($field_constraints as $field => $constraints) {
+       foreach ($constraints as $constraint) {
+           $violations = $validator->validateValue($request->get($field), $constraint);
+           if ($violations->count()) {
+               foreach ($violations as $violation) {
+                   $violations_messages[$field] = $violation->getMessage();
+               }
+           }
+       }
+   }
+   
+   
+   return $app['twig']->render('contact.twig', array(
+       'post'           => array(
+            'name'      => $request->get('name'),
+            'email'     => $request->get('email'),
+            'message'   => $request->get('message')
+       ),
+       'violations'     => $violations_messages
+   ));
+});
+
 $app->get('/sets.html', function() use ($app) {
     return $app['twig']->render('sets.twig');
 });
