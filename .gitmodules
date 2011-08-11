@@ -7,3 +7,6 @@
 [submodule "vendor/Smak"]
 	path = vendor/Smak
 	url = git@github.com:eexit/Smak.git
+[submodule "vendor/Symfony/src/Symfony/Component/Validator"]
+	path = vendor/Symfony/src/Symfony/Component/Validator
+	url = git://github.com/symfony/Validator.git
