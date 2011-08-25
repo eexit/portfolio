@@ -4,16 +4,16 @@
     <head>
         <meta http-equiv="content-type" content="text/html;charset=utf-8">
         <meta charset="utf-8">
-        <title>Portfolio</title>
-        <meta name="author" content="">
+        <title>Portfolio {% block title %}{% endblock %}</title>
+        <meta name="author" content="Joris Berthelot <admin@eexit.net>">
         <meta name="description" content="">
-        <link rel="shortcut icon" href="">
-        <link rel="stylesheet" href="" type="text/css" media="screen">
-        <link rel="stylesheet" href="" type="text/css" media="handheld">
+        <link rel="shortcut icon" href="/favicon.ico">
+        <link rel="stylesheet" href="/styles/portfolio-screen.css" type="text/css" media="screen">
+        <link rel="stylesheet" href="/styles/portfolio-handheld.css" type="text/css" media="handheld">
     </head>
     <body>
         <header>
-            <a href="/"><img src="" width="" height="" alt="logo" /></a>
+            <a href="#"><img src="/design/logo.png" width="45" height="60" alt="logo" /></a>
             <nav>
                 <ul>
                     <li><a href="http://www.eexit.net">eexit.net</a></li>
@@ -22,7 +22,9 @@
                 </ul>
             </nav>
         </header>
-        {% block body %}{% endblock %}
+        <div>
+            {% block content %}{% endblock %}
+        </div>
         <footer>
         </footer>
     </body>

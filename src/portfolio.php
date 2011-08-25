@@ -27,14 +27,16 @@ $app->register(new Silex\Extension\MonologExtension(), array(
     'monolog.level'         => 300
 ));
 
+$app['debug'] = true;
+
 // Application error handling
 $app->error(function(\Exception $e) use ($app) {
     if ($e instanceof NotFoundHttpException) {
-        $content = vsprintf('<h1>%d - %s (%s)</h1>', array(
-           $e->getStatusCode(),
-           Response::$statusTexts[$e->getStatusCode()],
-           $app['request']->getRequestUri()
-        ));
+        $content = sprintf('<h1>%d - %s (%s)</h1>',
+            $e->getStatusCode(),
+            Response::$statusTexts[$e->getStatusCode()],
+            $app['request']->getRequestUri()
+        );
         return new Response($content, $e->getStatusCode());
     }
     
@@ -49,20 +51,23 @@ $app->error(function(\Exception $e) use ($app) {
 
 $app->get('/', function() use ($app) {
     return $app['twig']->render('index.twig');
-});
+})->bind('home');
 
 $app->get('/about.html', function() use ($app) {
     return $app['twig']->render('about.twig');
-});
+})->bind('about');
 
 $app->get('/contact.html', function() use ($app) {
     return $app['twig']->render('contact.twig');
-});
+})->bind('contact');
 
 $app->post('/contact.html', function() use ($app) {
-   $request = $app['request'];
-   $validator = $app['validator'];
-   $field_constraints = array(
+    $field_data = array(
+        'name'      => $app['request']->get('name'),
+        'email'     => $app['request']->get('email'),
+        'message'   => $app['request']->get('message')
+    );
+    $field_constraints = array(
         'name'      => array(
             new Constraints\NotBlank(),
             new Constraints\MinLength(3)
@@ -74,33 +79,43 @@ $app->post('/contact.html', function() use ($app) {
         'message'   => array(
             new Constraints\NotBlank()
         )
-   );
-   
-   foreach ($field_constraints as $field => $constraints) {
-       foreach ($constraints as $constraint) {
-           $violations = $validator->validateValue($request->get($field), $constraint);
-           if ($violations->count()) {
-               foreach ($violations as $violation) {
-                   $violations_messages[$field] = $violation->getMessage();
-               }
-           }
-       }
-   }
-   
-   
-   return $app['twig']->render('contact.twig', array(
-       'post'           => array(
-            'name'      => $request->get('name'),
-            'email'     => $request->get('email'),
-            'message'   => $request->get('message')
-       ),
-       'violations'     => $violations_messages
-   ));
+    );
+
+    // Loops on field contraints
+    foreach ($field_constraints as $field => $constraints) {
+        foreach ($constraints as $constraint) {
+            // Gets contraint violation
+            $violations = $app['validator']->validateValue($field_data[$field], $constraint);
+            
+            // If there are violation
+            if ($violations->count()) {
+                foreach ($violations as $violation) {
+                    // Appends the violation message to the message stack
+                    $violations_messages[$field] = $violation->getMessage();
+                }
+            }
+        }
+    }
+    
+    if (!empty($violations_messages)) {
+        return $app['twig']->render('contact.twig', array(
+            'post'          => $field_data,
+            'violations'    => $violations_messages
+        ));   
+    }
+    
+    /*
+        TODO 
+    */
+    
+    return $app['twig']->render('contact.twig', array(
+        'confirmation' => 'Your message has been successfully sent!'
+    ));
 });
 
 $app->get('/sets.html', function() use ($app) {
     return $app['twig']->render('sets.twig');
-});
+})->bind('sets');
 
 $app->get('/{set}.html', function($set) use ($app) {
     return $app->escape($set);

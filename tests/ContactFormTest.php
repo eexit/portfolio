@@ -26,6 +26,18 @@ class ContactFormTest extends WebTestCase
         $this->assertTrue($client->getResponse()->isOk());
     }
     
+    public function testSucceedMessage()
+    {
+        $client = $this->createClient();
+        $crawler = $client->request('POST', '/contact.html', array(
+           'name'       => 'Joris',
+           'email'      => 'admin@eexit.net',
+           'message'    => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        ));
+        
+        $this->assertContains('Your message has been successfully sent!', $crawler->text());
+    }
+    
     public function testAllFieldEmptyValidatorMessages()
     {
         $client = $this->createClient();
@@ -51,7 +63,7 @@ class ContactFormTest extends WebTestCase
         $minlen_validator = new Constraints\MinLength(3);
         
         $crawler = $client->request('POST', '/contact.html', array(
-            'name'      => 'Jo',
+            'name'      => 'Jo', // Must have under 3 chars
             'email'     => 'foobar@baz.tld',
             'message'   => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
         ));

@@ -41,7 +41,7 @@ class WebAppTreeTest extends WebTestCase
         $this->assertTrue($client->getResponse()->isOk());
         
         // DOM validation
-        $this->assertTrue(1 == $crawler->filter('h1:contains("Portfolio")')->count());
+        $this->assertEquals(1, $crawler->filter('h1:contains("Portfolio")')->count());
     }
     
     public function testGetAbout()

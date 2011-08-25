@@ -1,7 +1,10 @@
 {% extends 'layout.twig' %}
 
-{% block body %}
+{% block content %}
 <h1>Drop me a note</h1>
+{% if confirmation %}
+    <p>{{ confirmation }}</p>
+{% endif %}
 {% if violations %}
     <ul class="warning">
         {% for field, message in violations %}
