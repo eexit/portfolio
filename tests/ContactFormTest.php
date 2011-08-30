@@ -44,16 +44,9 @@ class ContactFormTest extends WebTestCase
         $crawler = $client->request('POST', '/contact.html');
         $not_blank_validator = new Constraints\NotBlank();
         
-        $this->assertEquals(1, $crawler->filter('form')->count());
-        $this->assertEquals(1, $crawler->filter('ul[class="warning"]')->count());
-        $this->assertEquals(3, $crawler->filter('ul[class="warning"] > li')->count());
-        
-        $node_messages = $crawler->filter('ul[class="warning"] > li')->each(function($node, $i) {
-            return $node->nodeValue;
-        });
-        
-        foreach ($node_messages as $message) {
-            $this->assertContains($not_blank_validator->message, $message);
+        $this->assertEquals(3, $crawler->filter('div[class*="error"]')->count());
+        for ($i = 0; $i < 3; $i++) {
+            $this->assertEquals($not_blank_validator->message, $crawler->filter('div[class*="error"] span[class="help-block"]')->eq($i)->text());
         }
     }
     
@@ -63,13 +56,12 @@ class ContactFormTest extends WebTestCase
         $minlen_validator = new Constraints\MinLength(3);
         
         $crawler = $client->request('POST', '/contact.html', array(
-            'name'      => 'Jo', // Must have under 3 chars
+            'name'      => 'Jo', // Must be under 3 chars
             'email'     => 'foobar@baz.tld',
             'message'   => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
         ));
         
-        $this->assertEquals(1, $crawler->filter('ul[class="warning"] > li')->count());
-        $this->assertContains(str_replace('{{ limit }}', 3, $minlen_validator->message), $crawler->filter('ul[class="warning"] > li')->text());
+        $this->assertContains(str_replace('{{ limit }}', 3, $minlen_validator->message), $crawler->filter('div[class*="error"] span[class="help-block"]')->eq(0)->text());
     }
     
     public function testEmailInvalidValidatorMessage()
@@ -83,8 +75,7 @@ class ContactFormTest extends WebTestCase
             'message'   => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
         ));
         
-        $this->assertEquals(1, $crawler->filter('ul[class="warning"] > li')->count());
-        $this->assertContains($email_validator->message, $crawler->filter('ul[class="warning"] > li')->text());
+        $this->assertContains($email_validator->message, $crawler->filter('div[class*="error"] span[class="help-block"]')->eq(0)->text());
     }
 }
 

@@ -1,21 +1,83 @@
+{# contact.twig #}
 {% extends 'layout.twig' %}
-
+{% block title %}write me{% endblock %}
 {% block content %}
-<h1>Drop me a note</h1>
-{% if confirmation %}
-    <p>{{ confirmation }}</p>
-{% endif %}
-{% if violations %}
-    <ul class="warning">
-        {% for field, message in violations %}
-            <li>{{ field|title }} field raised: {{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
-<form method="post" action="/contact.html">
-    <label>Name: <input type="text" name="name" value="{{ post.name }}" /></label>
-    <label>Email: <input type="email" name="email" value="{{ post.email }}" /></label>
-    <label>Message: <textarea cols="40" rows="10" name="message">{{ post.message }}</textarea></label>
-    <input type="submit" value="Send" />
-</form>
+    <div class="row">
+        <div class="span4 columns"><img src="/design/contact/Pollen_Rotors.jpg" alt="A great shot of flower" width="235" height="100" title="Pollen Rotors" /></div>
+        <div class="span4 columns"><img src="/design/contact/Crocodile_clip.jpg" alt="A great shot of tree" width="235" height="100" title="Crocodile clip" /></div>
+        <div class="span4 columns"><img src="/design/contact/Enclosed_air_tank.jpg" alt="A great shot of water drop" width="235" height="100" title="Enclosed air tank" /></div>
+        <div class="span4 columns"><img src="/design/contact/The_green_side.jpg" alt="A great shot of leave" width="235" height="100" title="The green side" /></div>
+    </div>
+    <div class="row">
+        <div class="span5 columns">
+            <h1>Drop me a note</h1>
+            <p>If you enjoyed to have a look at my portfolio and you want more and perhaps a shooting session with me, I'd love to receive an inquiry from you.</p>
+            <div class="twipsies well">
+                <div style="position: relative">
+                    <address>
+                        <strong><span class="fn">Joris Berthelot</span></strong><br />
+                        <span class="url">http://photography.eexit.net</span><br />
+                        <span class="email">photography@eexit.net (<a href="#" data-title="below">?</a>)</span><br />
+                        <span class="country-name">France</span>
+                    </address>
+                    <div class="twipsy below">
+                        <div class="twipsy-arrow"></div>
+                        <div class="twipsy-inner">Don't try to spam me!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="span11 columns">
+            {% if confirmation %}
+                <div class="alert-message success">
+                    <p>{{ confirmation }}</p>
+                </div>
+            {% endif %}
+            <form method="post" action="/contact.html" class="form-stacked">
+                <div class="clearfix {% if violations.name %}error{% endif %}">
+                    <label for="name">Name</label>
+                    <div class="input">
+                        <input class="xxlarge" name="name" id="name" size="16" type="text" value="{{ post.name }}" />
+                        {% if violations.name %}
+                            <span class="help-block">{{ violations.name }}</span>
+                        {% else %}
+                            <span class="help-block">Three caracters at least</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="clearfix {% if violations.email %}error{% endif %}">
+                    <label for="email">Email address</label>
+                    <div class="input">
+                        <div class="input-prepend">
+                            <span class="add-on">@</span>
+                            <input class="xxlarge" name="email" id="email" size="16" type="email" value="{{ post.email }}" />
+                            {% if violations.email %}
+                                <span class="help-block">{{ violations.email }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix {% if violations.message %}error{% endif %}">
+                    <label for="message">Message content</label>
+                    <div class="input">
+                        <textarea cols="40" rows="8" class="xxlarge" id="message" name="message">{{ post.message }}</textarea>
+                        {% if violations.message %}
+                            <span class="help-block">{{ violations.message }}</span>
+                        {% else %}
+                            <span class="help-block">No HTML allowed.</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <div class="input">
+                        <label>
+                            <input type="checkbox" name="copy" value="true" />
+                            <span>Send me a copy</span>
+                        </label>
+                    </div>
+                </div>
+                <input type="submit" class="btn medium" value="Send" />
+            </form>
+        </div>
+    </div>
 {% endblock %}

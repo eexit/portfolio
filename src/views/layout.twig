@@ -1,13 +1,14 @@
 {# layout.twig #}
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta http-equiv="content-type" content="text/html;charset=utf-8">
         <meta charset="utf-8">
-        <title>Portfolio {% block title %}{% endblock %}</title>
+        <title>eexit's photography portfolio | {% block title %}{% endblock %}</title>
         <meta name="author" content="Joris Berthelot <admin@eexit.net>">
         <meta name="description" content="">
         <link rel="shortcut icon" href="/favicon.ico">
+        <link rel="stylesheet" href="/styles/bootstrap-1.1.1.min.css" type="text/css" media="all">
         <link rel="stylesheet" href="/styles/portfolio-screen.css" type="text/css" media="screen">
         <link rel="stylesheet" href="/styles/portfolio-handheld.css" type="text/css" media="handheld">
     </head>
@@ -16,16 +17,21 @@
             <a href="#"><img src="/design/logo.png" width="45" height="60" alt="logo" /></a>
             <nav>
                 <ul>
-                    <li><a href="http://www.eexit.net">eexit.net</a></li>
+                    <li><a href="/">Home</a></li>
                     <li><a href="/about.html" rel="me">About</a></li>
                     <li><a href="/contact.html">Contact</a></li>
                 </ul>
             </nav>
         </header>
-        <div>
+        <div class="container">
             {% block content %}{% endblock %}
         </div>
         <footer>
+            <div class="container">
+                <p>I'm a photographer by passion but I also do <a href="http://www.eexit.net" title="Go to eexit.net" rel="me">great stuff</a> too!</p>
+            </div>
         </footer>
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+        <script type="text/javascript" src="/js/portfolio.js"></script>
     </body>
 </html>
