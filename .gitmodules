@@ -13,3 +13,7 @@
 [submodule "vendor/Symfony/src/Symfony/Component/Finder"]
 	path = vendor/Symfony/src/Symfony/Component/Finder
 	url = git://github.com/symfony/Finder.git
+
+[submodule "vendor/Twitter/bootstrap"]
+	path = vendor/Twitter/bootstrap
+	url = git://github.com/twitter/bootstrap.git
