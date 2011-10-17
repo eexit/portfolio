@@ -48,13 +48,10 @@
                 <div class="clearfix {% if violations.email %}error{% endif %}">
                     <label for="email">Email address</label>
                     <div class="input">
-                        <div class="input-prepend">
-                            <span class="add-on">@</span>
-                            <input class="xxlarge" name="email" id="email" size="16" type="email" value="{{ post.email }}" />
-                            {% if violations.email %}
-                                <span class="help-block">{{ violations.email }}</span>
-                            {% endif %}
-                        </div>
+                        <input class="xxlarge" name="email" id="email" size="16" type="email" value="{{ post.email }}" />
+                        {% if violations.email %}
+                            <span class="help-block">{{ violations.email }}</span>
+                        {% endif %}
                     </div>
                 </div>
                 <div class="clearfix {% if violations.message %}error{% endif %}">

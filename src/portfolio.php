@@ -9,18 +9,19 @@ require_once __DIR__ . '/../vendor/Silex/silex.phar';
 $app = new Silex\Application();
 
 // Registers Symfony Validator component extension
-$app->register(new Silex\Extension\ValidatorExtension(), array(
+$app->register(new Silex\Provider\ValidatorServiceProvider(), array(
    'validator.class_path'   => __DIR__ . '/../vendor/Symfony/src' 
 ));
 
 // Registers Twig extension
-$app->register(new Silex\Extension\TwigExtension(), array(
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
    'twig.class_path'    => __DIR__ . '/../vendor/Twig/lib',
-   'twig.path'          => __DIR__ . '/views'
+   'twig.path'          => __DIR__ . '/views',
+   'twig.options'       => array('strict_variables' => false)
 ));
 
 // Registers Monolog extension
-$app->register(new Silex\Extension\MonologExtension(), array(
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.class_path'    => __DIR__ . '/../vendor/monolog/src',
     'monolog.logfile'       => __DIR__ . '/../log/portfolio.log',
     'monolog.name'          => 'portfolio',
