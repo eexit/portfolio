@@ -7,7 +7,7 @@ class ContactFormTest extends WebTestCase
 {
     public function createApplication()
     {
-        return require __DIR__ . '/../src/portfolio.php';
+        return require __DIR__ . '/../../src/portfolio.php';
     }
     
     public function testFormHasLandingPage()
@@ -28,9 +28,10 @@ class ContactFormTest extends WebTestCase
     
     public function testSucceedMessage()
     {
+        $this->_createsMailTester();
         $client = $this->createClient();
         $crawler = $client->request('POST', '/contact.html', array(
-           'name'       => 'Joris',
+           'name'       => 'Joris Berthelot',
            'email'      => 'admin@eexit.net',
            'message'    => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
         ));
@@ -76,6 +77,28 @@ class ContactFormTest extends WebTestCase
         ));
         
         $this->assertContains($email_validator->message, $crawler->filter('div[class*="error"] span[class="help-block"]')->eq(0)->text());
+    }
+    
+    public function testMailIsSent()
+    {
+        $this->_createsMailTester();
+        $client = $this->createClient();
+        $client->request('POST', '/contact.html', array(
+            'name'      => 'Joris Berthelot',
+            'email'     => 'admin@eexit.net',
+            'message'   => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+        ));
+        
+        var_dump($this->app['mailer.logger']->dump());
+    }
+    
+    protected function _createsMailTester()
+    {
+        $this->app['swiftmailer.transport'] = new \Swift_Transport_NullTransport($this->app['swiftmailer.transport.eventdispatcher']);
+        $this->app['mailer.logger'] = $this->app->share(function() {
+            return new \Swift_Plugins_LoggerPlugin(new \Swift_Plugins_Loggers_ArrayLogger());
+        });
+        $this->app['mailer']->registerPlugin($this->app['mailer.logger']);
     }
 }
 

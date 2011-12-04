@@ -6,7 +6,7 @@ class WebAppTreeTest extends WebTestCase
 {
     public function createApplication()
     {
-        return require __DIR__ . '/../src/portfolio.php';
+        return require __DIR__ . '/../../src/portfolio.php';
     }
     
     public function testLayoutElements()
