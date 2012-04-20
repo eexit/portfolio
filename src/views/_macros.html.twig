@@ -1,0 +1,11 @@
+{# _macros.html.twig #}
+
+{% macro img(photo, context, title, alt) %}
+    {% if  photo is defined %}
+        {% set default_title    = 'Photography © Joris Berthelot' %}
+        {% set default_alt      = 'This is a photography of the ' ~ context.set_title ~ ' collection' %}
+        {% set path             = smak_public_path ~ '/' ~ context.set.name ~ '/' ~ photo.getBasename() %}
+
+        <img src="{{ path }}" title="{{ title|default(default_title) }}" alt="{{ alt|default(default_alt) }}" {{ photo.getHtmlAttr()|raw }} />
+    {% endif %}
+{% endmacro %}

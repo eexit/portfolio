@@ -1,20 +1,15 @@
 {# index.twig #}
 {% extends 'layout.twig' %}
-{% block title %}homepage{% endblock %}
+{% block title %}Stream{% endblock %}
+{% block header_class %}class="loadme"{% endblock %}
 {% block content %}
-    <h1>Portfolio</h1>
-    <div class="row">
-        <div class="span4 columns">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        </div>
-        <div class="span4 columns">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        </div>
-        <div class="span4 columns">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        </div>
-        <div class="span4 columns">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-        </div>
+<div id="scrollwrap">
+    <div id="scrollable">
+        {% for set in sets %}
+           {% include set.view ignore missing %}
+        {% endfor %}
     </div>
+</div>
+<input id="handler" type="range" max="0" step="20" />
+<script type="text/javascript">var build = true;</script>
 {% endblock %}

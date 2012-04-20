@@ -1,80 +1,56 @@
 {# contact.twig #}
 {% extends 'layout.twig' %}
-{% block title %}write me{% endblock %}
+{% block title %}Contact{% endblock %}
 {% block content %}
-    <div class="row">
-        <div class="span4 columns"><img src="/design/contact/Pollen_Rotors.jpg" alt="A great shot of flower" width="235" height="100" title="Pollen Rotors" /></div>
-        <div class="span4 columns"><img src="/design/contact/Crocodile_clip.jpg" alt="A great shot of tree" width="235" height="100" title="Crocodile clip" /></div>
-        <div class="span4 columns"><img src="/design/contact/Enclosed_air_tank.jpg" alt="A great shot of water drop" width="235" height="100" title="Enclosed air tank" /></div>
-        <div class="span4 columns"><img src="/design/contact/The_green_side.jpg" alt="A great shot of leave" width="235" height="100" title="The green side" /></div>
-    </div>
-    <div class="row">
-        <div class="span5 columns">
-            <h1>Drop me a note</h1>
-            <p>If you enjoyed to have a look at my portfolio and you want more and perhaps a shooting session with me, I'd love to receive an inquiry from you.</p>
-            <div class="twipsies well">
-                <div style="position: relative">
-                    <address>
-                        <strong><span class="fn">Joris Berthelot</span></strong><br />
-                        <span class="url">http://photography.eexit.net</span><br />
-                        <span class="email">photography@eexit.net (<a href="#" data-title="below">?</a>)</span><br />
-                        <span class="country-name">France</span>
-                    </address>
-                    <div class="twipsy below">
-                        <div class="twipsy-arrow"></div>
-                        <div class="twipsy-inner">Don't try to spam me!</div>
-                    </div>
-                </div>
+<div id="container">
+    <article>
+        <h2><a href="{{ domain }}/contact.html">Contact</a></h2>
+        {% if app.session.hasFlash('notice') %}
+            <div class="alert alert-success">
+                <p>{{ app.session.flash('notice') }}</p>
             </div>
-        </div>
-        <div class="span11 columns">
-            {% if confirmation %}
-                <div class="alert-message success">
-                    <p>{{ confirmation }}</p>
-                </div>
-            {% endif %}
-            <form method="post" action="/contact.html" class="form-stacked">
-                <div class="clearfix {% if violations.name %}error{% endif %}">
-                    <label for="name">Name</label>
-                    <div class="input">
-                        <input class="xxlarge" name="name" id="name" size="16" type="text" value="{{ post.name }}" />
-                        {% if violations.name %}
-                            <span class="help-block">{{ violations.name }}</span>
-                        {% else %}
-                            <span class="help-block">Three caracters at least</span>
-                        {% endif %}
+        {% else %}
+            <p>I'd love to receive an inquiry from you...</p>
+        {% endif %}
+        <address id="hcard-Joris-Berthelot" class="vcard">
+            <strong><span class="fn">Joris Berthelot</span></strong><br>
+            <span class="url">http://photography.eexit.net</span><br>
+            <span class="email"><!-- this -->photography<!-- email -->@<!-- address -->eexit<!-- is -->.<!-- protected -->net</span><br>
+            <span class="city">New York</span>,
+            <span class="region">NY</span>,
+            <span class="country-name">USA</span>
+        </address>
+
+        <form method="post" action="/contact.html">
+            <fieldset>
+                <div class="control-group {% if violations.name %}error{% endif %}">
+                    <label class="control-label" for="name">Full name ({% if violations.name %}{{ violations.name|lower }}{% else %}3 caracters at least{% endif %})</label>
+                    <div class="controls">
+                        <input type="text" class="input-xxxlarge" id="name" name="name" value="{{ post.name }}"/>
                     </div>
                 </div>
-                <div class="clearfix {% if violations.email %}error{% endif %}">
-                    <label for="email">Email address</label>
-                    <div class="input">
-                        <input class="xxlarge" name="email" id="email" size="16" type="email" value="{{ post.email }}" />
-                        {% if violations.email %}
-                            <span class="help-block">{{ violations.email }}</span>
-                        {% endif %}
+            </fieldset>
+            <fieldset>
+                <div class="control-group {% if violations.email %}error{% endif %}">
+                    <label class="control-label" for="email">Email address {% if violations.email %}({{ violations.email|lower }}){% endif %}</label>
+                    <div class="controls">
+                        <input type="email" class="input-xxxlarge" id="email" name="email" value="{{ post.email }}"/>
                     </div>
                 </div>
-                <div class="clearfix {% if violations.message %}error{% endif %}">
-                    <label for="message">Message content</label>
-                    <div class="input">
-                        <textarea cols="40" rows="8" class="xxlarge" id="message" name="message">{{ post.message }}</textarea>
-                        {% if violations.message %}
-                            <span class="help-block">{{ violations.message }}</span>
-                        {% else %}
-                            <span class="help-block">No HTML allowed.</span>
-                        {% endif %}
+            </fieldset>
+            <fieldset>
+                <div class="control-group {% if violations.message %}error{% endif %}">
+                    <label class="control-label" for="message">Message ({% if violations.message %}{{ violations.message|lower }}{% else %}no HTML allowed{% endif %})</label>
+                    <div class="controls">
+                        <textarea cols="40" rows="6" class="xxlarge" id="message" name="message">{{ post.message }}</textarea>
                     </div>
                 </div>
-                <div class="clearfix">
-                    <div class="input">
-                        <label>
-                            <input type="checkbox" name="copy" value="true" />
-                            <span>Send me a copy</span>
-                        </label>
-                    </div>
-                </div>
-                <input type="submit" class="btn medium" value="Send" />
-            </form>
-        </div>
-    </div>
+            </fieldset>
+            <label class="checkbox">
+                <input type="checkbox" name="copy" value="true" class="inline" /> Send me a copy
+            </label>
+            <button type="submit" class="btn-small btn-inverse">Send</button>
+        </form>
+    </article>
+</div>
 {% endblock %}

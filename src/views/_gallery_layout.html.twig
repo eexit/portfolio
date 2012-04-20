@@ -1,0 +1,19 @@
+{# _gallery_layout.html.twig #}
+{% import '_macros.html.twig' as macros %}
+<article class="loadme">
+    <h2><a href="{{ set.name }}.html" title="{{ set_title ? set_title : set.formatted_name|title }}">{{ set_title ? set_title : set.formatted_name|title }}</a> {% if set.is_new %}<small>NEW!</small>{% endif %}</h2>
+    {% block set_intro %}{% endblock %}
+    {% if full_view %}
+        {% block set_content %}{% endblock %}
+        {% if nav|length > 0 %}
+            <nav>
+                <ul>
+                    <li id="next">{% if nav.next %}&laquo; <a href="{{ domain ~ '/' ~ nav.next }}.html" title="Go the next set">next entry</a>{% endif %}</li>
+                    <li id="prev">{% if nav.prev %}<a href="{{ domain ~ '/' ~ nav.prev }}.html" title="Go the previous set">previous entry</a> &raquo;{% endif %}</li>
+                </ul>
+            </nav>
+    {% endif %}
+    {% else %}
+        <p><small>{{ set.count() }} photos</small></p>
+    {% endif %}
+</article>

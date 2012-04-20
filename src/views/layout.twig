@@ -2,37 +2,47 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>
-        <meta http-equiv="content-type" content="text/html;charset=utf-8">
         <meta charset="utf-8">
-        <title>eexit's photography portfolio | {% block title %}{% endblock %}</title>
-        <meta name="author" content="Joris Berthelot <admin@eexit.net>">
+        <title>Joris Berthelot Photography | {% block title %}{% endblock %}</title>
+        <meta name="author" content="Joris Berthelot <photography@eexit.net>">
         <meta name="description" content="">
-        <link rel="shortcut icon" href="/favicon.ico">
-        <link rel="stylesheet" href="/ui/styles/bootstrap.min.css" type="text/css" media="all">
-        <link rel="stylesheet" href="/ui/styles/portfolio-screen.css" type="text/css" media="screen">
-        <link rel="stylesheet" href="/ui/styles/portfolio-handheld.css" type="text/css" media="handheld">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="shortcut icon" href="{{ domain }}/favicon.ico">
+        {% if app.debug %}
+            <link rel="stylesheet" href="{{ domain }}/ui/styles/bootstrap.min.css" type="text/css" media="all">
+            <link rel="stylesheet" href="{{ domain }}/ui/styles/portfolio.css" type="text/css" media="all">
+            <noscript>
+                <link rel="stylesheet" href="{{ domain }}/ui/styles/portfolio-ns.css" type="text/css" media="all">
+            </noscript>
+        {% else %}
+            <link rel="stylesheet" href="{{ domain }}/ui/styles/portfolio-min.css" type="text/css" media="all">
+            <noscript>
+                <link rel="stylesheet" href="{{ domain }}/ui/styles/portfolio-ns-min.css" type="text/css" media="all">
+            </noscript>
+        {% endif %}
     </head>
     <body>
-        <header>
-            <a href="#"><img src="/ui/img/logo.png" width="45" height="60" alt="logo" /></a>
+        <header {% block header_class %}{% endblock %}>
+            <h1><a href="{{ domain }}">Joris<br>Berthelot</a></h1>
+            <img src="{{ domain }}/ui/img/ajax-loader2.gif" id="loader" alt="loading..." width="16" height="16" />
             <nav>
                 <ul>
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/sets.html">Sets</a></li>
-                    <li><a href="/about.html" rel="me">About</a></li>
-                    <li><a href="/contact.html">Contact</a></li>
+                    <li><a href="{{ domain }}/about.html" rel="me">about</a></li>
+                    <li><a href="{{ domain }}/contact.html">contact</a></li>
                 </ul>
             </nav>
         </header>
-        <div class="container">
-            {% block content %}{% endblock %}
-        </div>
-        <footer>
-            <div class="container">
-                <p>I'm a photographer by passion but I also do <a href="http://www.eexit.net" title="Go to eexit.net" rel="me">great stuff</a> too!</p>
-            </div>
-        </footer>
-        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-        <script type="text/javascript" src="/ui/js/portfolio.js"></script>
+        {% block content %}{% endblock %}
+        {% if app.debug %}
+            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.min.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.tools.min.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.mousewheel.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.getscrollbarwidth.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.sizes.min.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.easing.1.3.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/portfolio.js"></script>
+        {% else %}
+            <script type="text/javascript" src="{{ domain }}/ui/js/portfolio-min.js"></script>
+        {% endif %}
     </body>
 </html>
