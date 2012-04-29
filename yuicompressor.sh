@@ -20,6 +20,7 @@ cat $js_path/src/jquery.tools.min.js >> $js_path/portfolio-min.js.tmp
 cat $js_path/src/jquery.mousewheel.js >> $js_path/portfolio-min.js.tmp
 cat $js_path/src/jquery.getscrollbarwidth.js >> $js_path/portfolio-min.js.tmp
 cat $js_path/src/jquery.sizes.min.js >> $js_path/portfolio-min.js.tmp
+#cat $js_path/src/jquery.lazyload.min.js >> $js_path/portfolio-min.js.tmp
 cat $js_path/src/jquery.easing.1.3.js >> $js_path/portfolio-min.js.tmp
 cat $js_path/src/portfolio.js >> $js_path/portfolio-min.js.tmp
 java -jar $compressor --type js -o $js_path/portfolio-min.js $js_path/portfolio-min.js.tmp

@@ -1,32 +1,32 @@
 @font-face {
     font-family: 'DroidSerifRegular';
-    src: url('../fonts/DroidSerif/DroidSerif-Regular-webfont.eot');
-    src: url('../fonts/DroidSerif/DroidSerif-Regular-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/DroidSerif/DroidSerif-Regular-webfont.woff') format('woff'),
-         url('../fonts/DroidSerif/DroidSerif-Regular-webfont.ttf') format('truetype'),
-         url('../fonts/DroidSerif/DroidSerif-Regular-webfont.svg#DroidSerifRegular') format('svg');
+    src: url('/ui/fonts/DroidSerif/DroidSerif-Regular-webfont.eot');
+    src: url('/ui/fonts/DroidSerif/DroidSerif-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/ui/fonts/DroidSerif/DroidSerif-Regular-webfont.woff') format('woff'),
+         url('/ui/fonts/DroidSerif/DroidSerif-Regular-webfont.ttf') format('truetype'),
+         url('/ui/fonts/DroidSerif/DroidSerif-Regular-webfont.svg#DroidSerifRegular') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'DroidSerifItalic';
-    src: url('../fonts/DroidSerif/DroidSerif-Italic-webfont.eot');
-    src: url('../fonts/DroidSerif/DroidSerif-Italic-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/DroidSerif/DroidSerif-Italic-webfont.woff') format('woff'),
-         url('../fonts/DroidSerif/DroidSerif-Italic-webfont.ttf') format('truetype'),
-         url('../fonts/DroidSerif/DroidSerif-Italic-webfont.svg#DroidSerifItalic') format('svg');
+    src: url('/ui/fonts/DroidSerif/DroidSerif-Italic-webfont.eot');
+    src: url('/ui/fonts/DroidSerif/DroidSerif-Italic-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/ui/fonts/DroidSerif/DroidSerif-Italic-webfont.woff') format('woff'),
+         url('/ui/fonts/DroidSerif/DroidSerif-Italic-webfont.ttf') format('truetype'),
+         url('/ui/fonts/DroidSerif/DroidSerif-Italic-webfont.svg#DroidSerifItalic') format('svg');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'DroidSerifBold';
-    src: url('../fonts/DroidSerif/DroidSerif-Bold-webfont.eot');
-    src: url('../fonts/DroidSerif/DroidSerif-Bold-webfont.eot?#iefix') format('embedded-opentype'),
-         url('../fonts/DroidSerif/DroidSerif-Bold-webfont.woff') format('woff'),
-         url('../fonts/DroidSerif/DroidSerif-Bold-webfont.ttf') format('truetype'),
-         url('../fonts/DroidSerif/DroidSerif-Bold-webfont.svg#DroidSerifBold') format('svg');
+    src: url('/ui/fonts/DroidSerif/DroidSerif-Bold-webfont.eot');
+    src: url('/ui/fonts/DroidSerif/DroidSerif-Bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('/ui/fonts/DroidSerif/DroidSerif-Bold-webfont.woff') format('woff'),
+         url('/ui/fonts/DroidSerif/DroidSerif-Bold-webfont.ttf') format('truetype'),
+         url('/ui/fonts/DroidSerif/DroidSerif-Bold-webfont.svg#DroidSerifBold') format('svg');
     font-weight: normal;
     font-style: normal;
 }
@@ -50,11 +50,11 @@ body {
 }
 
 q:before {
-    content: open-quote" ";
+    content: open-quote;
 }
 
 q:after {
-    content: " "close-quote;
+    content: close-quote;
 }
 
 header {
@@ -166,7 +166,7 @@ h2 {
 h2 a {
     vertical-align: middle;
     display: inline-block;
-    line-height: 5em;
+    line-height: 1.2em;
 }
 
 h2 small {
@@ -235,7 +235,7 @@ article form textarea {
 
 address {
     padding: 2em;
-    background: #eee url(../img/stamp.png) 90% center no-repeat;
+    background: #eee url(/ui/img/stamp.png) 90% center no-repeat;
 }
 
 .range,
@@ -277,6 +277,10 @@ input[type="range"] {
 
 .alert-info * {
     color: rgb(58, 135, 173);
+}
+
+img.lazy {
+  display: none;
 }
 
 @media (max-width: 560px), (max-height: 450px) {
@@ -330,9 +334,7 @@ input[type="range"] {
         margin-top: 4.5em;
     }
 
-    article,
-    #scrollable article {
-        display: block;
+    article {
         margin: 2em auto;
         float: none;
     }

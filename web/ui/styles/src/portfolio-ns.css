@@ -12,7 +12,7 @@ header.loadme #loader {
     display: none;
 }
 
-.loadme nav {
+header.loadme nav {
     display: inline;
 }
 
