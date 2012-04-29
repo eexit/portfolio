@@ -1,15 +1,14 @@
 {# index.html.twig #}
 {% extends '_layout.html.twig' %}
-{% block title %}Stream{% endblock %}
-{% block header_class %}class="loadme"{% endblock %}
+{% set title = 'Stream' %}
+{% set header_attr = ' class="loadme"' %}
 {% block content %}
-<div id="scrollwrap">
-    <div id="scrollable">
-        {% for set in sets %}
-           {% include set.view ignore missing %}
-        {% endfor %}
+    <div id="scrollwrap">
+        <div id="scrollable">
+            {% for set in sets %}
+               {% include set.twig_subpath with { 'standalone': false } %}
+            {% endfor %}
+        </div>
     </div>
-</div>
-<input id="handler" type="range" max="0" step="20" />
-<script type="text/javascript">var build = true;</script>
+    <input id="handler" type="range" max="0" step="20" />
 {% endblock %}

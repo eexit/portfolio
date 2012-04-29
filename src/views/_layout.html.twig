@@ -1,18 +1,19 @@
 {# _layout.html.twig #}
+{#% spaceless %#}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
-        <title>Joris Berthelot Photography | {% block title %}{% endblock %}</title>
+        <title>Joris Berthelot Photography | {{ title|raw }}</title>
         <meta name="author" content="Joris Berthelot <photography@eexit.net>">
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="{{ domain }}/favicon.ico">
         {% if app.debug %}
-            <link rel="stylesheet" href="{{ domain }}/ui/styles/bootstrap.min.css" type="text/css" media="all">
-            <link rel="stylesheet" href="{{ domain }}/ui/styles/portfolio.css" type="text/css" media="all">
+            <link rel="stylesheet" href="{{ domain }}/ui/styles/src/bootstrap.min.css" type="text/css" media="all">
+            <link rel="stylesheet" href="{{ domain }}/ui/styles/src/portfolio.css" type="text/css" media="all">
             <noscript>
-                <link rel="stylesheet" href="{{ domain }}/ui/styles/portfolio-ns.css" type="text/css" media="all">
+                <link rel="stylesheet" href="{{ domain }}/ui/styles/src/portfolio-ns.css" type="text/css" media="all">
             </noscript>
         {% else %}
             <link rel="stylesheet" href="{{ domain }}/ui/styles/portfolio-min.css" type="text/css" media="all">
@@ -20,9 +21,12 @@
                 <link rel="stylesheet" href="{{ domain }}/ui/styles/portfolio-ns-min.css" type="text/css" media="all">
             </noscript>
         {% endif %}
+        <!--[if lt IE 9]>
+            <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
     </head>
     <body>
-        <header {% block header_class %}{% endblock %}>
+        <header{{ header_attr|raw }}>
             <h1><a href="{{ domain }}">Joris<br>Berthelot</a></h1>
             <img src="{{ domain }}/ui/img/ajax-loader2.gif" id="loader" alt="loading..." width="16" height="16" />
             <nav>
@@ -34,15 +38,17 @@
         </header>
         {% block content %}{% endblock %}
         {% if app.debug %}
-            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.min.js"></script>
-            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.tools.min.js"></script>
-            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.mousewheel.js"></script>
-            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.getscrollbarwidth.js"></script>
-            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.sizes.min.js"></script>
-            <script type="text/javascript" src="{{ domain }}/ui/js/jquery.easing.1.3.js"></script>
-            <script type="text/javascript" src="{{ domain }}/ui/js/portfolio.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/src/jquery.min.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/src/jquery.tools.min.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/src/jquery.mousewheel.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/src/jquery.getscrollbarwidth.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/src/jquery.sizes.min.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/src/jquery.lazyload.min.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/src/jquery.easing.1.3.js"></script>
+            <script type="text/javascript" src="{{ domain }}/ui/js/src/portfolio.js"></script>
         {% else %}
             <script type="text/javascript" src="{{ domain }}/ui/js/portfolio-min.js"></script>
         {% endif %}
     </body>
 </html>
+{#% endspaceless %#}
