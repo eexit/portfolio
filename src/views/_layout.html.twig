@@ -26,7 +26,7 @@
         <![endif]-->
     </head>
     <body>
-        <header{{ header_attr|raw }}>
+        <header{% if header_attr is defined %}{{ header_attr|raw }}{% endif %}>
             <h1><a href="{{ app.domain }}">Joris<br>Berthelot</a></h1>
             <img src="{{ app.domain }}/ui/img/ajax-loader2.gif" id="loader" alt="loading..." width="16" height="16" />
             <nav>

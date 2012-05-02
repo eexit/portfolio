@@ -57,6 +57,11 @@ q:after {
     content: close-quote;
 }
 
+blockquote {
+    margin: 2em;
+    border-color: #ddd;
+}
+
 header {
     position: fixed;
     width: 8em;
@@ -269,6 +274,12 @@ input[type="range"] {
 .alert {
     border-radius: 0;
     border: 0;
+    padding: 1em 0;
+}
+
+.alert p {
+    padding: 0;
+    margin: 1em 2em;
 }
 
 .alert-success * {

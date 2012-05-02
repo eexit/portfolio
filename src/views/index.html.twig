@@ -6,7 +6,7 @@
     <div id="scrollwrap">
         <div id="scrollable">
             {% for set in sets %}
-               {% include set.helpers.twig_subpath with { 'standalone': false } %}
+               {% include set.twig_subpath ignore missing with { 'standalone': false } %}
             {% endfor %}
         </div>
     </div>

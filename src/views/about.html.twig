@@ -1,35 +1,34 @@
 {# about.html.twig #}
 {% extends '_layout.html.twig' %}
-{% import '_macros.html.twig' as macros %}
-{% block title %}About{% endblock %}
+{% set title = 'About' %}
 {% block content %}
-<div id="container">
-    <article>
-        <h2 id="about" title="Read a bit about myself!"><a href="{{ domain }}/about.html">About</a></h2>
-        <img src="{{ domain }}/img/about_id.jpg" title="Often behind the lense..." alt="Photography of Joris Berthelot" width="400" height="279" />
-        <p>Not considering myself as an artist, I luckily grew up outdoor and got sensibilized to the nature beauty. Fortunately, my eye surgery didn't affect my vision of everyday charm and harmony all around us.</p>
-        <p>Neither hipped photograph nor a professional, I mostly shoot for fun and sharing good quality pictures with anybody who wants to... If you feel adventurous, don't hesitate to <a href="{{ domain }}/contact.html" title="let's make some great photos!">contact me</a> for a shooting session.</p>
-        <p>Sunset lover, I usually grab my camera to catch up some good light from my office or on weekends, this is likely my little pleasure eh!</p>
-        <p>This portfolio has some very old shots I did with my old <a href="http://www.canon.fr/For_Home/Product_Finder/Cameras/Digital_Camera/IXUS/Digital_IXUS_50/index.asp">Canon Digital Ixus 50</a> and more recently my <a href="http://www.canon.fr/For_Home/Product_Finder/Cameras/Digital_SLR/EOS_450D/">Canon EOS 450D</a> which is my current camera.</p>
-        <h2 id="tools"><a href="#tools">Cameras &amp; accessories</a></h2>
-        <ul>
-            <li><a href="http://www.canon.fr/For_Home/Product_Finder/Cameras/Digital_SLR/EOS_450D/" class="ext">Canon 450D</a></li>
-            <li><a href="http://www.canon.fr/For_Home/Product_Finder/Cameras/EF_Lenses/Standard_Zoom/EF-S_18-55mm_f3.5-5.6_IS/" class="ext">Canon EF-S 18-55mm f/3.5-5.6 IS</a></li>
-            <li><a href="http://www.canon.fr/For_Home/Product_Finder/Cameras/EF_Lenses/Standard_and_Medium_Telephoto/EF_50mm_f1.4_USM/" class="ext">Canon EF 50mm f/1.4 USM + Hood</a></li>
-            <li><a href="http://www.hama.de/portal/articleId*37264/action*2563" class="ext">Hama Polarising Filter Circular</a></li>
-            <li><a href="http://www.zykkor-usa.com/lenses/0-45x-wide-angle-52mm-lens-with-macro-in-black-color.html" class="ext">Zikkor 0.45x Wide Angle Lens + Macro</a></li>
-            <li>Lense filter ring adapter 52 to 58mm</li>
-            <li>UV Filter</li>
-            <li><del>Canon EF 35-80mm f/4-5.6 USM</del></li>
-            <li><del>Canon EF 80-200mm f/4.5-5.6 II</del></li>
-            <li><del>Canon Digital Ixus 50</del></li>
-            <li><del>Nikon Coolpix 2000</del></li>
-        </ul>
-        <h3>Credits</h3>
-        <p><small>Photo: <a href="http://www.eiiko.com/Porfolio/">Baptiste Bianciot</a>.
-            <br>Design inspired from Cargo Collective <a href="http://cargocollective.com/nonfeed">nonfeed</a> design.
-            <br>Porfolio self-cooked with <a href="http://silex.sensiolabs.org">Silex</a> and <a href="https://github.com/eexit/Smak">Smak</a> (<a href="https://github.com/eexit/Portfolio">sources</a>).
-        </small></p>
-    </article>
-</div>
+    <div id="container">
+        <article>
+            <h2 id="about" title="Read a bit about myself!"><a href="{{ app.domain }}/about.html">About</a></h2>
+            <img src="{{ app.domain }}/img/about_id.jpg" title="Often behind the lense..." alt="Photography of Joris Berthelot" width="400" height="279" />
+            <p>Not considering myself as an artist, I luckily grew up outdoor and got sensibilized to the nature beauty. Fortunately, my eye surgery didn't affect my vision of everyday charm and harmony all around us.</p>
+            <p>Neither hipped photograph nor a professional, I mostly shoot for fun and sharing good quality pictures with anybody who wants to... If you feel adventurous, don't hesitate to <a href="{{ app.domain }}/contact.html" title="let's make some great photos!">contact me</a> for a shooting session.</p>
+            <p>Sunset lover, I usually grab my camera to catch up some good light from my office or on weekends, this is likely my little pleasure eh!</p>
+            <p>This portfolio has some very old shots I did with my old <a href="http://www.canon.fr/For_Home/Product_Finder/Cameras/Digital_Camera/IXUS/Digital_IXUS_50/index.asp">Canon Digital Ixus 50</a> and more recently my <a href="http://www.canon.fr/For_Home/Product_Finder/Cameras/Digital_SLR/EOS_450D/">Canon EOS 450D</a> which is my current camera.</p>
+            <h2 id="tools"><a href="#tools">Cameras &amp; accessories</a></h2>
+            <ul>
+                <li><a href="http://www.canon.fr/For_Home/Product_Finder/Cameras/Digital_SLR/EOS_450D/" class="ext">Canon 450D</a></li>
+                <li><a href="http://www.canon.fr/For_Home/Product_Finder/Cameras/EF_Lenses/Standard_Zoom/EF-S_18-55mm_f3.5-5.6_IS/" class="ext">Canon EF-S 18-55mm f/3.5-5.6 IS</a></li>
+                <li><a href="http://www.canon.fr/For_Home/Product_Finder/Cameras/EF_Lenses/Standard_and_Medium_Telephoto/EF_50mm_f1.4_USM/" class="ext">Canon EF 50mm f/1.4 USM + Hood</a></li>
+                <li><a href="http://www.hama.de/portal/articleId*37264/action*2563" class="ext">Hama Polarising Filter Circular</a></li>
+                <li><a href="http://www.zykkor-usa.com/lenses/0-45x-wide-angle-52mm-lens-with-macro-in-black-color.html" class="ext">Zikkor 0.45x Wide Angle Lens + Macro</a></li>
+                <li>Lense filter ring adapter 52 to 58mm</li>
+                <li>UV Filter</li>
+                <li><del>Canon EF 35-80mm f/4-5.6 USM</del></li>
+                <li><del>Canon EF 80-200mm f/4.5-5.6 II</del></li>
+                <li><del>Canon Digital Ixus 50</del></li>
+                <li><del>Nikon Coolpix 2000</del></li>
+            </ul>
+            <h3>Credits</h3>
+            <p><small>Photo: <a href="http://www.eiiko.com/Porfolio/">Baptiste Bianciot</a>.
+                <br>Design inspired from Cargo Collective <a href="http://cargocollective.com/nonfeed">nonfeed</a> design.
+                <br>Porfolio self-cooked with <a href="http://silex.sensiolabs.org">Silex</a> and <a href="https://github.com/eexit/Smak">Smak</a> (<a href="https://github.com/eexit/Portfolio">sources</a>).
+            </small></p>
+        </article>
+    </div>
 {% endblock %}

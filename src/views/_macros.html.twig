@@ -3,7 +3,7 @@
     {% if  photo is defined %}
         {% set default_title    = 'Photography &copy; Joris Berthelot' %}
         {% set default_alt      = 'This is a photography of the ' ~ context.set.name ~ ' collection' %}
-        {% set path             = app['smak.portfolio.public_path'] ~ context.set.helpers.smak_subpath ~ '/' ~ context.set.name ~ '/' ~ photo.getBasename() %}
+        {% set path             = app['smak.portfolio.public_path'] ~ context.set.smak_subpath ~ '/' ~ context.set.getSplInfo().getBasename() ~ '/' ~ photo.getBasename() %}
 
         {#
         <img src="{{ domain }}/ui/img/image-loading.gif" data-original="{{ path }}" data-width="{{ photo.getWidth() }}" data-height="{{ photo.getHeight() }}" class="lazy" title="{{ title|default(default_title) }}" alt="{{ alt|default(default_alt) }}" width="400" height="64" />

@@ -20,7 +20,7 @@ $app['autoloader']->registerNamespaces(array(
     'Smak'      =>  __DIR__ . '/../vendor/Smak/lib'
 ));
 
-// Useful namespaces
+// Namespaces
 use Smak\Portfolio\Silex\Provider\SmakServiceProvider;
 
 use Silex\Provider\TwigServiceProvider;
@@ -35,7 +35,10 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 // Registers Symfony Session component extension
-$app->register(new SessionServiceProvider());
+$app->register(new SessionServiceProvider(), array(
+    'session.storage.options'   => array(
+        'cookie_lifetime'       => 3600 * 24
+)));
 $app['session']->start();
 
 $app->register(new HttpCacheServiceProvider(), array(
@@ -52,7 +55,8 @@ $app->register(new TwigServiceProvider(), array(
     'twig.class_path'       => __DIR__ . '/../vendor/Twig/lib',
     'twig.path'             => __DIR__ . '/views',
     'twig.options'          => array(
-        'strict_variables'  => false,
+        'charset'           => 'utf-8',
+        'strict_variables'  => true,
         //'cache'             => $app['cache.dir']
     )
 ));
@@ -77,27 +81,22 @@ $app->register(new SwiftmailerServiceProvider(), array(
     'swiftmailer.class_path'    => __DIR__ . '/../vendor/swiftmailer/lib/classes'
 ));
 
-
-$app['twig']->addGlobal('domain', $app['domain']);
-$app['twig']->addGlobal('smak_public_path', $app['smak.portfolio.public_path']);
-//$app['swiftmailer.transport'] = \Swift_SmtpTransport::newInstance('smtp.bbox.fr', 25);
+$app['swiftmailer.transport'] = \Swift_SmtpTransport::newInstance('mail.optonline.net', 25);
 $app['cache.defaults'] = array(
     'Cache-Control'     => sprintf('public, max-age=%d, s-maxage=%d, must-revalidate, proxy-revalidate', $app['cache.max_age'], $app['cache.max_age']),
     'Expires'           => date('r', time() + $app['cache.expires'])
 );
 
 // Application error handling
-$app->error(function(\Exception $e) use ($app) {
-    if ($e instanceof NotFoundHttpException) {
-        $content = sprintf('<h1>%d - %s (%s)</h1>',
-            $e->getStatusCode(),
-            Response::$statusTexts[$e->getStatusCode()],
-            $app['request']->getRequestUri()
-        );
-        return new Response($content, $e->getStatusCode());
+$app->error(function(\Exception $e, $code) use ($app) {
+    switch ($code) {
+        case '404':
+            $response = $app['twig']->render('error.html.twig');
+            break;
+        default:
+            $response = $app['twig']->render('error.html.twig');
+            break;
     }
-    
-    if ($e instanceof HttpException) {
-        return new Response('<h1>Oops!</h1><h2>Something went wrong...</h2><p>You should go eat some cookies while we\'re fixing this feature!</p>', $e->getStatusCode());
-    }
+
+    return new Response($response, $code);
 });

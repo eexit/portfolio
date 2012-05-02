@@ -1,56 +1,55 @@
 {# contact.html.twig #}
 {% extends '_layout.html.twig' %}
-{% block title %}Contact{% endblock %}
+{% set title= 'Contact' %}
 {% block content %}
-<div id="container">
-    <article>
-        <h2><a href="{{ domain }}/contact.html">Contact</a></h2>
-        {% if app.session.hasFlash('notice') %}
-            <div class="alert alert-success">
-                <p>{{ app.session.flash('notice') }}</p>
-            </div>
-        {% else %}
-            <p>I'd love to receive an inquiry from you...</p>
-        {% endif %}
-        <address id="hcard-Joris-Berthelot" class="vcard">
-            <strong><span class="fn">Joris Berthelot</span></strong><br>
-            <span class="url">http://photography.eexit.net</span><br>
-            <span class="email"><!-- this -->photography<!-- email -->@<!-- address -->eexit<!-- is -->.<!-- protected -->net</span><br>
-            <span class="city">New York</span>,
-            <span class="region">NY</span>,
-            <span class="country-name">USA</span>
-        </address>
-
-        <form method="post" action="/contact.html">
-            <fieldset>
-                <div class="control-group {% if violations.name %}error{% endif %}">
-                    <label class="control-label" for="name">Full name ({% if violations.name %}{{ violations.name|lower }}{% else %}3 caracters at least{% endif %})</label>
-                    <div class="controls">
-                        <input type="text" class="input-xxxlarge" id="name" name="name" value="{{ post.name }}"/>
-                    </div>
+    <div id="container">
+        <article>
+            <h2><a href="{{ app.domain }}/contact.html">Contact</a></h2>
+            {% if app.session.hasFlash('notice') %}
+                <div class="alert alert-success">
+                    <p>{{ app.session.flash('notice') }}</p>
                 </div>
-            </fieldset>
-            <fieldset>
-                <div class="control-group {% if violations.email %}error{% endif %}">
-                    <label class="control-label" for="email">Email address {% if violations.email %}({{ violations.email|lower }}){% endif %}</label>
-                    <div class="controls">
-                        <input type="email" class="input-xxxlarge" id="email" name="email" value="{{ post.email }}"/>
+            {% else %}
+                <p>I'd love to receive an inquiry from you...</p>
+            {% endif %}
+            <address id="hcard-Joris-Berthelot" class="vcard">
+                <strong><span class="fn">Joris Berthelot</span></strong><br>
+                <span class="url">http://photography.eexit.net</span><br>
+                <span class="email"><!-- this -->photography<!-- email -->@<!-- address -->eexit<!-- is -->.<!-- protected -->net</span><br>
+                <span class="city">New York</span>,
+                <span class="region">NY</span>,
+                <span class="country-name">USA</span>
+            </address>
+            <form method="post" action="/contact.html">
+                <fieldset>
+                    <div class="control-group {% if violations.name is defined %}error{% endif %}">
+                        <label class="control-label" for="name">Full name ({% if violations.name is defined %}{{ violations.name|lower }}{% else %}3 caracters at least{% endif %})</label>
+                        <div class="controls">
+                            <input type="text" class="input-xxxlarge" id="name" name="name" value="{% if post.name is defined %}{{ post.name }}{% endif %}"/>
+                        </div>
                     </div>
-                </div>
-            </fieldset>
-            <fieldset>
-                <div class="control-group {% if violations.message %}error{% endif %}">
-                    <label class="control-label" for="message">Message ({% if violations.message %}{{ violations.message|lower }}{% else %}no HTML allowed{% endif %})</label>
-                    <div class="controls">
-                        <textarea cols="40" rows="6" class="xxlarge" id="message" name="message">{{ post.message }}</textarea>
+                </fieldset>
+                <fieldset>
+                    <div class="control-group {% if violations.email is defined %}error{% endif %}">
+                        <label class="control-label" for="email">Email address {% if violations.email is defined %}({{ violations.email|lower }}){% endif %}</label>
+                        <div class="controls">
+                            <input type="email" class="input-xxxlarge" id="email" name="email" value="{% if post.email is defined %}{{ post.email }}{% endif %}"/>
+                        </div>
                     </div>
-                </div>
-            </fieldset>
-            <label class="checkbox">
-                <input type="checkbox" name="copy" value="true" class="inline" /> Send me a copy
-            </label>
-            <button type="submit" class="btn-small btn-inverse">Send</button>
-        </form>
-    </article>
-</div>
+                </fieldset>
+                <fieldset>
+                    <div class="control-group {% if violations.message is defined %}error{% endif %}">
+                        <label class="control-label" for="message">Message ({% if violations.message is defined %}{{ violations.message|lower }}{% else %}no HTML allowed{% endif %})</label>
+                        <div class="controls">
+                            <textarea cols="40" rows="6" class="xxlarge" id="message" name="message">{% if post.message is defined %}{{ post.message }}{% endif %}</textarea>
+                        </div>
+                    </div>
+                </fieldset>
+                <label class="checkbox">
+                    <input type="checkbox" name="copy" value="1" class="inline" /> Send me a copy
+                </label>
+                <button type="submit" class="btn-small btn-inverse">Send</button>
+            </form>
+        </article>
+    </div>
 {% endblock %}

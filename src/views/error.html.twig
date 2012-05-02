@@ -1,0 +1,17 @@
+{# error.html.twig #}
+{% extends '_layout.html.twig' %}
+{% set title = "Oops!" %}
+{% block content %}
+    <div id="container">
+        <article>
+            <h2><a href="{{ app.domain }}">{{ title }}</a></h2>
+            <img src="{{ app.domain }}/ui/img/boom.png" title="Something's wrong!" alt="A 'boom' picture" width="400" height="200" />
+            <h3>Why did you try to break the Internet?</h3>
+            <blockquote>
+                <q>Emptiness which is conceptually liable to be mistaken for sheer nothingness is in fact the reservoir of infinite possibilities.</q>
+                <small>D.T. Suzuki</small>
+            </blockquote>
+            <p>Let's get back to <a href="{{ app.domain }}" title="Go back home">the stream</a>.</p>
+        </article>
+    </div>
+{% endblock %}
