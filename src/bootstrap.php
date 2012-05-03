@@ -13,7 +13,7 @@ $app['cache.dir'] = __DIR__ . '/../cache';
 $app['cache.max_age'] = 3600 * 24 * 10;
 $app['cache.expires'] = 3600 * 24 * 10;
 
-$app['debug'] = true;
+$app['debug'] = false;
 
 $app['autoloader']->registerNamespaces(array(
     'Symfony'   =>  __DIR__ . '/../vendor/Symfony/src',
@@ -37,7 +37,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 // Registers Symfony Session component extension
 $app->register(new SessionServiceProvider(), array(
     'session.storage.options'   => array(
-        'cookie_lifetime'       => 3600 * 24
+        //'cookie_lifetime'       => 3600 * 24
 )));
 $app['session']->start();
 
@@ -57,6 +57,7 @@ $app->register(new TwigServiceProvider(), array(
     'twig.options'          => array(
         'charset'           => 'utf-8',
         'strict_variables'  => true,
+        'auto_reload'       => true,
         //'cache'             => $app['cache.dir']
     )
 ));
@@ -91,9 +92,11 @@ $app['cache.defaults'] = array(
 $app->error(function(\Exception $e, $code) use ($app) {
     switch ($code) {
         case '404':
+            $app['monolog']->addError(sprintf('%s Error on %s', $code, $app['request']->server->get('REQUEST_URI')));
             $response = $app['twig']->render('error.html.twig');
             break;
         default:
+            $app['monolog']->addCritical(sprintf('%s Error on %s', $code, $app['request']->server->get('REQUEST_URI')));
             $response = $app['twig']->render('error.html.twig');
             break;
     }

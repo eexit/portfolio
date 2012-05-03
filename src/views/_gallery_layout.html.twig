@@ -7,20 +7,20 @@
         <div id="container">
     {% endif %}
         <article class="loadme">
-            <h2><a href="{{ app.domain ~ set.smak_subpath ~ '/' ~ set.name }}.html" title="{{ title|raw }}">{{ title|raw }}</a>{% if set.is_fresh is defined and set.is_fresh %} <small>NEW!</small>{% endif %}</h2>
+            <h2><a href="{{ app.domain ~ set.smak_subpath ~ '/' ~ set.link_name }}.html" title="{{ title|raw }}">{{ title|raw }}</a>{% if set.is_fresh is defined and set.is_fresh %} <small>NEW!</small>{% endif %}</h2>
             {% block intro %}{% endblock %}
             {% if standalone %}
                 {% block body %}{% endblock %}
                 {% if 0 < nav|length %}
                     <nav>
                         <ul>
-                            <li id="next">{% if nav.next %}&laquo; <a href="{{ app.domain ~ nav.next.smak_subpath ~ '/' ~ nav.next.name }}.html" title="Go the next set">next entry</a>{% endif %}</li>
-                            <li id="prev">{% if nav.prev %}<a href="{{ app.domain ~ nav.prev.smak_subpath ~ '/' ~ nav.prev.name }}.html" title="Go the previous set">previous entry</a> &raquo;{% endif %}</li>
+                            <li id="next">{% if nav.next %}&laquo; <a href="{{ app.domain ~ nav.next.smak_subpath ~ '/' ~ nav.next.link_name }}.html" title="Go the next set">next entry</a>{% endif %}</li>
+                            <li id="prev">{% if nav.prev %}<a href="{{ app.domain ~ nav.prev.smak_subpath ~ '/' ~ nav.prev.link_name }}.html" title="Go the previous set">previous entry</a> &raquo;{% endif %}</li>
                         </ul>
                     </nav>
             {% endif %}
             {% else %}
-                <p><small>{{ set.count() }} photos | <a href="{{ app.domain ~ set.smak_subpath ~ '/' ~ set.name }}.html" title="{{ title|raw }}">Take a look</a></small></p>
+                <p><small>{{ set.count() }} photos | <a href="{{ app.domain ~ set.smak_subpath ~ '/' ~ set.link_name }}.html" title="{{ title|raw }}">Take a look</a></small></p>
             {% endif %}
         </article>
     {% if standalone %}

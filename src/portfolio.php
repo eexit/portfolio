@@ -18,6 +18,11 @@ $app['get_client_info'] = $app->protect(function() use ($app) {
     );
 });
 
+$app['smak.portfolio.name_filter'] = $app->protect(function($set_name) {
+    // Adds the two digits if it has been shrinked
+    return preg_match('/^\d{2}/', $set_name) ? $set_name : sprintf('00-%s', $set_name);
+});
+
 // Checks the freshness of a set
 $app['smak.portfolio.fresh_flag'] = $app->protect(function(Set $set) use ($app) {
 
@@ -30,6 +35,8 @@ $app['smak.portfolio.fresh_flag'] = $app->protect(function(Set $set) use ($app) 
 
     return $set;
 });
+
+$app['session']->clear();
 
 // This closure is the core of the application. It fetch all sets and order them in the right way
 $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
@@ -67,6 +74,8 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
         // Applies fresh flag
         $app['smak.portfolio.fresh_flag']($set);
 
+        $set->link_name = preg_match('/^00/', $set->name) ?substr($set->name, 3) : $set->name;
+
         // As ArrayIterator::offsetUnset() resets the pointer, this condition avoids duplicates in the result array
         if (!in_array($set, $results)) {
 
@@ -84,6 +93,12 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
 
     // Saves sets in session
     $app['session']->set('smak.portfolio.sets', $results);
+
+    // FIXME
+
+    $app['twig']->clearCacheFiles();
+    $app['http_cache']->getStore()->cleanup();
+    
     return $results;
 });
 
@@ -163,13 +178,17 @@ $app->get('/{year}/{set_name}.html', function($year, $set_name) use ($app) {
     }
 
     // Builds set full-name for matching
-    $set_path = sprintf('/%s/%s', $app->escape($year), $app->escape($set_name));
+    $set_path = sprintf('/%s/%s', $app->escape($year), $app['smak.portfolio.name_filter']($app->escape($set_name)));
+
+    //var_dump($set_path); exit(__LINE__);
 
     // Loops on available sets
     while ($sets->valid()) {
 
         // Current loop set
         $set = $sets->current();
+
+        //var_dump(sprintf('%s/%s', $set->smak_subpath, $set->name)); exit;
 
         // If the current loop set is the one
         if ($set_path == sprintf('%s/%s', $set->smak_subpath, $set->name)) {
