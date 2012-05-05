@@ -4,16 +4,17 @@
 require_once __DIR__ . '/../vendor/Silex/silex.phar';
 date_default_timezone_set('America/New_York');
 $app = new Silex\Application();
-$app['domain']  = 'http://local.dev.photo.eexit';
-$app['smak.portfolio.enable_fresh_flag'] = true;
-$app['smak.portfolio.fresh_flag_interval'] = 'P3D';
-$app['smak.portfolio.gallery_pattern'] = '/(\d{2})?([-[:alpha:]]+)/';
-
-$app['cache.dir'] = __DIR__ . '/../cache';
-$app['cache.max_age'] = 3600 * 24 * 10;
-$app['cache.expires'] = 3600 * 24 * 10;
 
 $app['debug'] = false;
+$app['smak.portfolio.enable_fresh_flag'] = false;
+$app['cache.max_age'] = 3600 * 24 * 10;
+$app['cache.expires'] = 3600 * 24 * 10;
+$app['domain']  = 'http://local.dev.photo.eexit';
+$app['smpt.domain'] = 'mail.optonline.net';
+$app['smpt.port'] = 25;
+$app['smak.portfolio.fresh_flag_interval'] = 'P5D';
+$app['smak.portfolio.gallery_pattern'] = '/(\d{2})?([-[:alpha:]]+)/';
+$app['cache.dir'] = __DIR__ . '/../cache';
 
 $app['autoloader']->registerNamespaces(array(
     'Symfony'   =>  __DIR__ . '/../vendor/Symfony/src',
@@ -35,15 +36,16 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 // Registers Symfony Session component extension
-$app->register(new SessionServiceProvider(), array(
-    'session.storage.options'   => array(
-        //'cookie_lifetime'       => 3600 * 24
-)));
+$app->register(new SessionServiceProvider());
 $app['session']->start();
 
+// Registers Symfony Cache component extension
 $app->register(new HttpCacheServiceProvider(), array(
-    'http_cache.cache_dir'  => $app['cache.dir']
-));
+    'http_cache.cache_dir'  => $app['cache.dir'],
+    'http_cache.options'    => array(
+        'allow_reload'      => $app['debug'],
+        'allow_revalidate'  => $app['debug']
+)));
 
 // Registers Symfony Validator component extension
 $app->register(new ValidatorServiceProvider(), array(
@@ -53,20 +55,21 @@ $app->register(new ValidatorServiceProvider(), array(
 // Registers Twig extension
 $app->register(new TwigServiceProvider(), array(
     'twig.class_path'       => __DIR__ . '/../vendor/Twig/lib',
-    'twig.path'             => __DIR__ . '/views',
+    'twig.path'             => array(
+        __DIR__ . '/views',
+        __DIR__ . '/../web/content'
+    ),
     'twig.options'          => array(
         'charset'           => 'utf-8',
         'strict_variables'  => true,
-        'auto_reload'       => true,
-        //'cache'             => $app['cache.dir']
+        'cache'             => $app['cache.dir']
     )
 ));
 
 // Registers Smak Portfolio extension
 $app->register(new SmakServiceProvider(), array(
     'smak.portfolio.content_path' => __DIR__ . '/../web/content',
-    'smak.portfolio.public_path'  => $app['domain'] . '/content',
-    'smak.portfolio.view_path'    => $app['twig.path'] . '/content_views'
+    'smak.portfolio.public_path'  => $app['domain'] . '/content'
 ));
 
 // Registers Monolog extension
@@ -82,7 +85,10 @@ $app->register(new SwiftmailerServiceProvider(), array(
     'swiftmailer.class_path'    => __DIR__ . '/../vendor/swiftmailer/lib/classes'
 ));
 
-$app['swiftmailer.transport'] = \Swift_SmtpTransport::newInstance('mail.optonline.net', 25);
+// Swiftmailer transport configuration
+$app['swiftmailer.transport'] = \Swift_SmtpTransport::newInstance($app['smpt.domain'], $app['smpt.port']);
+
+// Default cache values
 $app['cache.defaults'] = array(
     'Cache-Control'     => sprintf('public, max-age=%d, s-maxage=%d, must-revalidate, proxy-revalidate', $app['cache.max_age'], $app['cache.max_age']),
     'Expires'           => date('r', time() + $app['cache.expires'])
@@ -90,6 +96,11 @@ $app['cache.defaults'] = array(
 
 // Application error handling
 $app->error(function(\Exception $e, $code) use ($app) {
+
+    if ($app['debug']) {
+        return;
+    }
+
     switch ($code) {
         case '404':
             $app['monolog']->addError(sprintf('%s Error on %s', $code, $app['request']->server->get('REQUEST_URI')));

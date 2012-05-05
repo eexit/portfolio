@@ -2,11 +2,11 @@
 {% extends '_gallery_layout.html.twig' %}
 {% set title = 'Set title' %}
 {% block intro %}
-    {{ macros.img(set.getByName(''), _context, 'title', 'alt') }}
+    {{ macros.img(set.getById(0), _context, 'title', 'alt') }}
     <p>Introduction text</p>
 {% endblock %}
 {% block body %}
     <h3>Title</h3>
     <p>Comment</p>
-    {{ macros.img(set.getByName(''), _context, 'title', 'alt') }}
+    {{ macros.img(set.getByName('foo'), _context, 'title', 'alt') }}
 {% endblock %}

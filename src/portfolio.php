@@ -18,25 +18,24 @@ $app['get_client_info'] = $app->protect(function() use ($app) {
     );
 });
 
-$app['smak.portfolio.name_filter'] = $app->protect(function($set_name) {
-    // Adds the two digits if it has been shrinked
-    return preg_match('/^\d{2}/', $set_name) ? $set_name : sprintf('00-%s', $set_name);
-});
+// Twig loader (handles last-mod file + re-compile file if not fresh)
+$app['twig.template_loader'] = $app->protect(function($template_name) use ($app) {
+    // Gets the cache file modified time
+    $template_cache_file = $app['twig']->getCacheFilename($template_name);
+    $template_mtime = is_file($template_cache_file) ? filemtime($app['twig']->getCacheFilename($template_name)) : 0;
 
-// Checks the freshness of a set
-$app['smak.portfolio.fresh_flag'] = $app->protect(function(Set $set) use ($app) {
+    // If there is a newer version of the template
+    if (false == $app['twig']->isTemplateFresh($template_name, $template_mtime)) {
+        // Deletes the cached file
+        @unlink($template_cache_file);
 
-    // Checks if the fresh flag parameter is enabled
-    if ($app['smak.portfolio.enable_fresh_flag']) {
-        $freshness = new DateTime('now');
-        $freshness->sub(new DateInterval($app['smak.portfolio.fresh_flag_interval']));
-        $set->is_fresh = ($set->getSplInfo()->getMTime() >= $freshness->getTimestamp());
+        // Compiles and caches the newer version
+        $app['twig']->loadTemplate($template_name);
+        return filemtime($app['twig']->getCacheFilename($template_name));
     }
 
-    return $set;
+    return $template_mtime;
 });
-
-$app['session']->clear();
 
 // This closure is the core of the application. It fetch all sets and order them in the right way
 $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
@@ -61,20 +60,35 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
     }
 
     while ($sets->valid()) {
-        $set = $app['smak.portfolio.load']($sets->current());
 
-        // If the sets is unloadable
-        if (!$set) {
+        $set = $sets->current();
+        $smak_template = $set->getTemplate();
 
-            // Removes the item and continue
+        // If there is no template file or the set has no content
+        if (null == $smak_template || 0 == $set->count()) {
+            // Skips it and continue
             $sets->offsetUnset($sets->key());
             continue;
         }
 
-        // Applies fresh flag
-        $app['smak.portfolio.fresh_flag']($set);
-
+        // Template view helpers
+        $set->smak_subpath = dirname(substr($set->getSplInfo()->getRealPath(), strlen(realpath($app['smak.portfolio.content_path']))));
+        $set->twig_subpath = sprintf('%s/%s/%s', $set->smak_subpath, $set->getSplInfo()->getBasename(), $smak_template->getBasename());
+        
+        // Adds a formatted name for routes (suppresses 00- if the set starts by 00-)
         $set->link_name = preg_match('/^00/', $set->name) ?substr($set->name, 3) : $set->name;
+
+        // Template last-mod time
+        $template_mtime = $app['twig.template_loader']($set->twig_subpath);
+
+        // Checks if the fresh flag parameter is enabled
+        if ($app['smak.portfolio.enable_fresh_flag']) {
+
+            // Set the set fresh if it is
+            $freshness = new DateTime('now');
+            $freshness->sub(new DateInterval($app['smak.portfolio.fresh_flag_interval']));
+            $set->is_fresh = ($set->getTemplate()->getMTime() >= $freshness->getTimestamp());
+        }
 
         // As ArrayIterator::offsetUnset() resets the pointer, this condition avoids duplicates in the result array
         if (!in_array($set, $results)) {
@@ -86,19 +100,11 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
         $sets->next();
     }
 
-    // Returns false if there were sets but no ready set to show
-    if (empty($results)) {
-        return false;
-    }
-
     // Saves sets in session
     $app['session']->set('smak.portfolio.sets', $results);
-
-    // FIXME
-
     $app['twig']->clearCacheFiles();
     $app['http_cache']->getStore()->cleanup();
-    
+
     return $results;
 });
 
@@ -107,25 +113,17 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
 ####    ROUTES    ####
 ######################
 
-// Index
+// Index page
 $app->get('/', function() use ($app) {
+    $template_name = 'index.html.twig';
     $cache_headers = $app['cache.defaults'];
     $sets = $app['smak.portfolio.set_provider']();
 
-    if (!empty($sets)) {
-
-        // This is VERY important to loop on reversed sets to get the lastest last-modified
-        foreach (array_reverse($sets) as $set) {
-
-            // If the set is flagged as fresh, updates the last-modified HTTP header
-            if ($set->is_fresh) {
-                $cache_headers['Last-Modified'] = date('r', $set->getSplInfo()->getMTime());
-            }
-        }
-    }
+    // Updates the Last-Modified HTTP header
+    $cache_headers['Last-Modified'] = date('r', $app['twig.template_loader']($template_name));
 
     // Builds the response
-    $response = $app['twig']->render('index.html.twig', array(
+    $response = $app['twig']->render($template_name, array(
         'sets'  => $sets
     ));
 
@@ -133,7 +131,9 @@ $app->get('/', function() use ($app) {
     return new Response($response, 200, $app['debug'] ? array() : $cache_headers);
 });
 
+// Sets by year page
 $app->get('/{year}.html', function($year) use ($app) {
+    $template_name = 'index.html.twig';
     $cache_headers = $app['cache.defaults'];
 
     // Gets sets and filters for the requested year
@@ -146,17 +146,11 @@ $app->get('/{year}.html', function($year) use ($app) {
         return $app->abort(404);
     }
 
-    // This is VERY important to loop on reversed sets to get the lastest last-modified
-    foreach (array_reverse($sets) as $set) {
-
-        // If the set is flagged as fresh, updates the last-modified HTTP header
-        if ($set->is_fresh) {
-            $cache_headers['Last-Modified'] = date('r', $set->getSplInfo()->getMTime());
-        }
-    }
+    // Updates the Last-Modified HTTP header
+    $cache_headers['Last-Modified'] = date('r', $app['twig.template_loader']($template_name));
 
     // Builds the response
-    $response = $app['twig']->render('index.html.twig', array(
+    $response = $app['twig']->render($template_name, array(
         'sets'  => $sets
     ));
 
@@ -178,9 +172,7 @@ $app->get('/{year}/{set_name}.html', function($year, $set_name) use ($app) {
     }
 
     // Builds set full-name for matching
-    $set_path = sprintf('/%s/%s', $app->escape($year), $app['smak.portfolio.name_filter']($app->escape($set_name)));
-
-    //var_dump($set_path); exit(__LINE__);
+    $set_path = sprintf('/%s/%s', $app->escape($year), $app->escape($set_name));
 
     // Loops on available sets
     while ($sets->valid()) {
@@ -200,18 +192,17 @@ $app->get('/{year}/{set_name}.html', function($year, $set_name) use ($app) {
         $sets->next();
     }
 
+    // Throws a 404 error if no set found
     if (!$found) {
         return $app->abort(404);
-    }
-
-    // If the set is flagged as fresh, updates the last-modified HTTP header
-    if ($set->is_fresh) {
-        $cache_headers['Last-Modified'] = date('r', $set->getSplInfo()->getMTime());
     }
 
     // Navigation links generation
     $nav['next'] = 0 < $sets->key() ? $sets[$sets->key() - 1] : null;
     $nav['prev'] = count($sets) > $sets->key() ? $sets[$sets->key() + 1] : null;
+
+    // Updates the Last-Modified HTTP header
+    $cache_headers['Last-Modified'] = date('r', $app['twig.template_loader']($set->twig_subpath));
 
     // Builds the response
     $response = $app['twig']->render($set->twig_subpath, array(
@@ -224,17 +215,21 @@ $app->get('/{year}/{set_name}.html', function($year, $set_name) use ($app) {
     return new Response($response, 200, $app['debug'] ? array() : $cache_headers);
 })
 ->assert('year', '\d{4}')
-->assert('set_name', trim($app['smak.portfolio.gallery_pattern'], '/'));
+->assert('set_name', trim($app['smak.portfolio.gallery_pattern'], '/'))
+->convert('set_name', function($set_name) {
+    return preg_match('/^\d{2}/', $set_name) ? $set_name : sprintf('00-%s', $set_name);
+});
 
 // About page
 $app->get('/about.html', function() use ($app) {
-    // Caching management
+    $template_name = 'about.html.twig';
     $cache_headers = $app['cache.defaults'];
-    $twig_file = new SplFileInfo($app['twig.path'] . DIRECTORY_SEPARATOR . 'about.html.twig');
-    $cache_headers['Last-Modified'] = date('r', $twig_file->getMTime());
+
+    // Updates the Last-Modified HTTP header
+    $cache_headers['Last-Modified'] = date('r', $app['twig.template_loader']($template_name));
 
     // Builds the response
-    $response = $app['twig']->render('about.html.twig');
+    $response = $app['twig']->render($template_name);
 
     // Sends the response
     return new Response($response, 200, $app['debug'] ? array() : $cache_headers);
@@ -242,13 +237,14 @@ $app->get('/about.html', function() use ($app) {
 
 // Contact page (GET)
 $app->get('/contact.html', function() use ($app) {
-    // Caching management
+    $template_name = 'contact.html.twig';
     $cache_headers = $app['cache.defaults'];
-    $twig_file = new SplFileInfo($app['twig.path'] . DIRECTORY_SEPARATOR . 'contact.html.twig');
-    $cache_headers['Last-Modified'] = date('r', $twig_file->getMTime());
+
+    // Updates the Last-Modified HTTP header
+    $cache_headers['Last-Modified'] = date('r', $app['twig.template_loader']($template_name));
 
     // Builds the response
-    return $app['twig']->render('contact.html.twig');
+    $response = $app['twig']->render($template_name);
 
     // Sends the response
     return new Response($response, 200, $app['debug'] ? array() : $cache_headers);
@@ -323,6 +319,7 @@ $app->post('/contact.html', function() use ($app) {
     // Redirects to the contact page
     return $app->redirect('/contact.html');
 });
+
 
 return $app;
 
