@@ -11,6 +11,7 @@
             {% block intro %}{% endblock %}
             {% if standalone %}
                 {% block body %}{% endblock %}
+                <p><small>Updated on {{ last_mod }}.</small></p>
                 {% if 0 < nav|length %}
                     <nav>
                         <ul>

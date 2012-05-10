@@ -20,18 +20,21 @@ $app['get_client_info'] = $app->protect(function() use ($app) {
 
 // Twig loader (handles last-mod file + re-compile file if not fresh)
 $app['twig.template_loader'] = $app->protect(function($template_name) use ($app) {
+    clearstatcache();
+
     // Gets the cache file modified time
     $template_cache_file = $app['twig']->getCacheFilename($template_name);
-    $template_mtime = is_file($template_cache_file) ? filemtime($app['twig']->getCacheFilename($template_name)) : 0;
+    $template_mtime = is_file($template_cache_file) ? filemtime($template_cache_file) : 0;
 
     // If there is a newer version of the template
     if (false == $app['twig']->isTemplateFresh($template_name, $template_mtime)) {
         // Deletes the cached file
         @unlink($template_cache_file);
-
+        $app['http_cache']->getStore()->purge($app['request']->getUri());
+        
         // Compiles and caches the newer version
         $app['twig']->loadTemplate($template_name);
-        return filemtime($app['twig']->getCacheFilename($template_name));
+        return time();
     }
 
     return $template_mtime;
@@ -103,6 +106,7 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
     // Saves sets in session
     $app['session']->set('smak.portfolio.sets', $results);
     $app['twig']->clearCacheFiles();
+    $app['twig']->clearTemplateCache();
     $app['http_cache']->getStore()->cleanup();
 
     return $results;
@@ -180,8 +184,6 @@ $app->get('/{year}/{set_name}.html', function($year, $set_name) use ($app) {
         // Current loop set
         $set = $sets->current();
 
-        //var_dump(sprintf('%s/%s', $set->smak_subpath, $set->name)); exit;
-
         // If the current loop set is the one
         if ($set_path == sprintf('%s/%s', $set->smak_subpath, $set->name)) {
             $found = true;
@@ -201,14 +203,18 @@ $app->get('/{year}/{set_name}.html', function($year, $set_name) use ($app) {
     $nav['next'] = 0 < $sets->key() ? $sets[$sets->key() - 1] : null;
     $nav['prev'] = count($sets) > $sets->key() ? $sets[$sets->key() + 1] : null;
 
+    // Loads and gets the template age
+    $template_age = $app['twig.template_loader']($set->twig_subpath);
+
     // Updates the Last-Modified HTTP header
-    $cache_headers['Last-Modified'] = date('r', $app['twig.template_loader']($set->twig_subpath));
+    $cache_headers['Last-Modified'] = date('r', $template_age);
 
     // Builds the response
     $response = $app['twig']->render($set->twig_subpath, array(
-        'standalone' => true,
-        'set'        => $set,
-        'nav'        => $nav
+        'standalone'    => true,
+        'last_mod'      => date('F jS, Y', $template_age),
+        'set'           => $set,
+        'nav'           => $nav
     ));
 
     // Sends the response   
@@ -225,11 +231,16 @@ $app->get('/about.html', function() use ($app) {
     $template_name = 'about.html.twig';
     $cache_headers = $app['cache.defaults'];
 
+    // Loads and gets the template age
+    $template_age = $app['twig.template_loader']($template_name);
+
     // Updates the Last-Modified HTTP header
-    $cache_headers['Last-Modified'] = date('r', $app['twig.template_loader']($template_name));
+    $cache_headers['Last-Modified'] = date('r', $template_age);
 
     // Builds the response
-    $response = $app['twig']->render($template_name);
+    $response = $app['twig']->render($template_name, array(
+        'last_mod'  => date('F jS, Y', $template_age)
+    ));
 
     // Sends the response
     return new Response($response, 200, $app['debug'] ? array() : $cache_headers);
