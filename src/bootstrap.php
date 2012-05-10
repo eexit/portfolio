@@ -5,7 +5,7 @@ require_once __DIR__ . '/../vendor/Silex/silex.phar';
 date_default_timezone_set('America/New_York');
 $app = new Silex\Application();
 
-$app['debug'] = false;
+$app['debug'] = true;
 $app['smak.portfolio.enable_fresh_flag'] = false;
 $app['cache.max_age'] = 3600 * 24 * 10;
 $app['cache.expires'] = 3600 * 24 * 10;
@@ -32,8 +32,6 @@ use Silex\Provider\HttpCacheServiceProvider;
 use Silex\Provider\SwiftmailerServiceProvider;
 
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 // Registers Symfony Session component extension
 $app->register(new SessionServiceProvider());
@@ -43,8 +41,8 @@ $app['session']->start();
 $app->register(new HttpCacheServiceProvider(), array(
     'http_cache.cache_dir'  => $app['cache.dir'],
     'http_cache.options'    => array(
-        'allow_reload'      => $app['debug'],
-        'allow_revalidate'  => $app['debug']
+        'allow_reload'      => true,
+        'allow_revalidate'  => true
 )));
 
 // Registers Symfony Validator component extension
