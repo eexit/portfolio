@@ -55,12 +55,12 @@ article.loadme {
         margin: 1em 2em;
     }
 
-    nav ul li {
+    header nav ul li {
         float: left;
         margin: 1em;
     }
 
-    nav ul li a {
+    header nav ul li a {
         padding: .5em;
     }
 
