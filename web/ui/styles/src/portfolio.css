@@ -367,6 +367,7 @@ img.lazy {
 }
 
 @media (min-height: 800px) and (max-height: 1000px) {
+    header,
     header.loadme {
         top: 4em;
         bottom: 7em;
@@ -387,7 +388,10 @@ img.lazy {
 }
 
 @media (min-height: 1000px) {
-    header.loadme, #scrollwrap, article {
+    header,
+    header.loadme,
+    #scrollwrap,
+    article {
         top: 8em;
         bottom: 14em;
     }
