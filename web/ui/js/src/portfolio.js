@@ -238,7 +238,7 @@ $(window).load(function() {
     }
 
     $.portfolio.settings.loader().fadeOut('slow');
-    $.portfolio.settings.header().delay(0).animate({left: '4em'}, 1000, 'easeOutCirc');
+    $.portfolio.settings.header().css('left', $.portfolio.settings.header().position().left).animate({'left': '4em'}, 'slow', 'easeOutCirc');
     $.portfolio.settings.handle().css('left', 0);
 });
 
