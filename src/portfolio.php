@@ -20,24 +20,31 @@ $app['get_client_info'] = $app->protect(function() use ($app) {
 
 // Twig loader (handles last-mod file + re-compile file if not fresh)
 $app['twig.template_loader'] = $app->protect(function($template_name) use ($app) {
-    clearstatcache();
 
-    // Gets the cache file modified time
-    $template_cache_file = $app['twig']->getCacheFilename($template_name);
-    $template_mtime = is_file($template_cache_file) ? filemtime($template_cache_file) : 0;
-
-    // If there is a newer version of the template
-    if (false == $app['twig']->isTemplateFresh($template_name, $template_mtime)) {
-        // Deletes the cached file
-        @unlink($template_cache_file);
-        $app['http_cache']->getStore()->purge($app['request']->getUri());
-        
-        // Compiles and caches the newer version
-        $app['twig']->loadTemplate($template_name);
+    // Returns immediately the current time when in debug mod
+    if ($app['debug']) {
         return time();
     }
 
-    return $template_mtime;
+    // Gets the cache file and its modified time
+    $cache = $app['twig']->getCacheFilename($template_name);
+    $cache_time = !is_file($cache) ?: filemtime($cache);
+
+    // If there is a newer version of the template
+    if (false === $app['twig']->isTemplateFresh($template_name, $cache_time)) {
+
+        // Deletes the cached file
+        @unlink($cache);
+
+        // Flushes the application HTTP cache for the current URI
+        $app['http_cache']->getStore()->invalidate($app['request']);
+
+        // Returns the cache modified file time (as generated now)
+        return time();
+    }
+
+    // Returns the template modified time
+    return $cache_time;
 });
 
 // This closure is the core of the application. It fetch all sets and order them in the right way
@@ -77,7 +84,7 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
         // Template view helpers
         $set->smak_subpath = dirname(substr($set->getSplInfo()->getRealPath(), strlen(realpath($app['smak.portfolio.content_path']))));
         $set->twig_subpath = sprintf('%s/%s/%s', $set->smak_subpath, $set->getSplInfo()->getBasename(), $smak_template->getBasename());
-        
+
         // Adds a formatted name for routes (suppresses 00- if the set starts by 00-)
         $set->link_name = preg_match('/^00/', $set->name) ?substr($set->name, 3) : $set->name;
 
