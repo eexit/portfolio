@@ -226,7 +226,7 @@
 
     // View helper
     $.fn.portfolio.isViewportBuildable = function() {
-        return !(($(window).width() + $.getScrollbarWidth()) <= 560 || $(window).height() <= 450);
+        return !( $.portfolio.settings.scrollwrap().length > 0 && (($(window).width() + $.getScrollbarWidth()) <= 560 || $(window).height() <= 450));
     };
 
 })(jQuery);
@@ -236,9 +236,11 @@ $(window).load(function() {
         $.portfolio.settings.loader().hide();
         return;
     }
-
+    var h_pos = $.portfolio.settings.header().position();
+    if (h_pos) {
+        $.portfolio.settings.header().css('left', h_pos.left).animate({'left': '4em'}, 'slow', 'easeOutCirc');
+    }
     $.portfolio.settings.loader().fadeOut('slow');
-    $.portfolio.settings.header().css('left', $.portfolio.settings.header().position().left).animate({'left': '4em'}, 'slow', 'easeOutCirc');
     $.portfolio.settings.handle().css('left', 0);
 });
 
