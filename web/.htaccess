@@ -1,0 +1,25 @@
+# Silex application rewrite rules
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php [QSA,L]
+
+# Expiration configuration
+ExpiresActive On
+ExpiresByType text/css "access plus 90 days"
+ExpiresByType application/javascript "access plus 90 days"
+ExpiresDefault "access plus 10 years"
+
+# Compression configuration
+SetOutputFilter DEFLATE
+BrowserMatch ^Mozilla/4 gzip-only-text/html
+BrowserMatch ^Mozilla/4\.0[678] no-gzip
+BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+SetEnvIfNoCase Request_URI \
+\.(?:gif|jpe?g|png)$ no-gzip dont-vary
+Header append Vary User-Agent env=!dont-vary
+
+# Tells IE to apply the highest compatibility mod
+Header set X-UA-Compatible "IE=Edge"
+<FilesMatch ".(js|css|gif|png|jpe?g|pdf|xml|oga|ogg|m4a|ogv|mp4|m4v|webm|svg|svgz|eot|ttf|otf|woff|ico)$">
+    Header unset X-UA-Compatible
+</FilesMatch>
