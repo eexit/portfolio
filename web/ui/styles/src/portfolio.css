@@ -33,7 +33,9 @@
 
 *,
 article p,
-input {
+input,
+button,
+textarea {
     font-family: DroidSerifRegular, Georgia, serif;
     color: #222;
 }
