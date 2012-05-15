@@ -7,11 +7,15 @@ $app = new Silex\Application();
 
 $app['debug'] = true;
 $app['smak.portfolio.enable_fresh_flag'] = false;
-$app['cache.max_age'] = 3600 * 24 * 10;
-$app['cache.expires'] = 3600 * 24 * 10;
+$app['cache.max_age'] = 3600 * 24 * 90;
+$app['cache.expires'] = 3600 * 24 * 90;
 $app['domain']  = 'http://local.dev.photo.eexit';
-$app['smpt.domain'] = 'mail.optonline.net';
-$app['smpt.port'] = 25;
+
+$app['smtp.host'] = 'smtp.gmail.com';
+$app['smtp.port'] = 465;
+$app['smtp.username'] = '';
+$app['smtp.password'] = '';
+
 $app['smak.portfolio.fresh_flag_interval'] = 'P5D';
 $app['smak.portfolio.gallery_pattern'] = '/(\d{2})?([-[:alpha:]]+)/';
 $app['cache.dir'] = __DIR__ . '/../cache';
@@ -80,11 +84,15 @@ $app->register(new MonologServiceProvider(), array(
 
 // Registers Swiftmailer extension
 $app->register(new SwiftmailerServiceProvider(), array(
-    'swiftmailer.class_path'    => __DIR__ . '/../vendor/swiftmailer/lib/classes'
-));
-
-// Swiftmailer transport configuration
-$app['swiftmailer.transport'] = \Swift_SmtpTransport::newInstance($app['smpt.domain'], $app['smpt.port']);
+    'swiftmailer.class_path'    => __DIR__ . '/../vendor/swiftmailer/lib/classes',
+    'swiftmailer.options'       => array(
+        'host'          => $app['smtp.host'],
+        'port'          => $app['smtp.port'],
+        'username'      => $app['smtp.username'],
+        'password'      => $app['smtp.password'],
+        'auth_mode'     => 'login',
+        'encryption'    => 'ssl'
+)));
 
 // Default cache values
 $app['cache.defaults'] = array(
