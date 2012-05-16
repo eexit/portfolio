@@ -1,24 +1,29 @@
 <?php
 
+ini_set('display_errors', 0);
+error_reporting(E_ALL ^ E_NOTICE);
+date_default_timezone_set('America/New_York');
+
 // Bootstraping
 require_once __DIR__ . '/../vendor/Silex/silex.phar';
-date_default_timezone_set('America/New_York');
 $app = new Silex\Application();
 
-$app['debug'] = true;
-$app['smak.portfolio.enable_fresh_flag'] = false;
+// Application settins
+$app['debug']         = false;
 $app['cache.max_age'] = 3600 * 24 * 90;
 $app['cache.expires'] = 3600 * 24 * 90;
-$app['domain']  = 'http://local.dev.photo.eexit';
+$app['cache.dir']     = __DIR__ . '/../cache';
+$app['domain']        = 'http://photography.eexit.net';
 
-$app['smtp.host'] = 'smtp.gmail.com';
-$app['smtp.port'] = 465;
-$app['smtp.username'] = '';
-$app['smtp.password'] = '';
+// Mailer settings
+$app['mail.subject'] = 'New email from the portfolio!';
+$app['mail.sender']  = 'no-reply@eexit.net';
+$app['mail.to']      = array('photography@eexit.net' => 'Joris Berthelot');
 
+// Content display settings
+$app['smak.portfolio.enable_fresh_flag']   = false;
 $app['smak.portfolio.fresh_flag_interval'] = 'P5D';
-$app['smak.portfolio.gallery_pattern'] = '/(\d{2})?([-[:alpha:]]+)/';
-$app['cache.dir'] = __DIR__ . '/../cache';
+$app['smak.portfolio.gallery_pattern']     = '/(\d{2})?([-[:alpha:]]+)/';
 
 $app['autoloader']->registerNamespaces(array(
     'Symfony'   =>  __DIR__ . '/../vendor/Symfony/src',
@@ -84,15 +89,9 @@ $app->register(new MonologServiceProvider(), array(
 
 // Registers Swiftmailer extension
 $app->register(new SwiftmailerServiceProvider(), array(
-    'swiftmailer.class_path'    => __DIR__ . '/../vendor/swiftmailer/lib/classes',
-    'swiftmailer.options'       => array(
-        'host'          => $app['smtp.host'],
-        'port'          => $app['smtp.port'],
-        'username'      => $app['smtp.username'],
-        'password'      => $app['smtp.password'],
-        'auth_mode'     => 'login',
-        'encryption'    => 'ssl'
-)));
+    'swiftmailer.class_path'    => __DIR__ . '/../vendor/swiftmailer/lib/classes'
+));
+$app['mailer'] = \Swift_Mailer::newInstance(\Swift_MailTransport::newInstance());
 
 // Default cache values
 $app['cache.defaults'] = array(

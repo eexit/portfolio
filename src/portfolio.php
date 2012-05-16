@@ -28,7 +28,7 @@ $app['twig.template_loader'] = $app->protect(function($template_name) use ($app)
 
     // Gets the cache file and its modified time
     $cache = $app['twig']->getCacheFilename($template_name);
-    $cache_time = !is_file($cache) ?: filemtime($cache);
+    $cache_time = is_file($cache) ? filemtime($cache) : 0;
 
     // If there is a newer version of the template
     if (false === $app['twig']->isTemplateFresh($template_name, $cache_time)) {
@@ -256,16 +256,12 @@ $app->get('/about.html', function() use ($app) {
 // Contact page (GET)
 $app->get('/contact.html', function() use ($app) {
     $template_name = 'contact.html.twig';
-    $cache_headers = $app['cache.defaults'];
 
-    // Updates the Last-Modified HTTP header
-    $cache_headers['Last-Modified'] = date('r', $app['twig.template_loader']($template_name));
+    // Loads and gets the template age
+    $app['twig.template_loader']($template_name);
 
     // Builds the response
-    $response = $app['twig']->render($template_name);
-
-    // Sends the response
-    return new Response($response, 200, $app['debug'] ? array() : $cache_headers);
+    return $app['twig']->render($template_name);
 });
 
 // Contact page (POST)
@@ -315,11 +311,11 @@ $app->post('/contact.html', function() use ($app) {
 
     // Prepares the email
     $mail = \Swift_Message::newInstance()
-        ->setSubject('New email from the portfolio!')
-        ->setSender('no-reply@eexit.net')
+        ->setSubject($app['mail.subject'])
+        ->setSender($app['mail.sender'])
         ->setFrom(array(trim($field_data['email']) => trim($field_data['name'])))
         ->setReturnPath(trim($field_data['email']))
-        ->setTo(array('photography@eexit.net' => 'Joris Berthelot'))
+        ->setTo($app['mail.to'])
         ->setCC(((bool) $app['request']->get('copy')) ? array($field_data['email'] => $field_data['name']) : null)
         ->setBody($app['twig']->render('email.html.twig', array(
             'sender'    => $app->escape($field_data['name']),
@@ -330,14 +326,13 @@ $app->post('/contact.html', function() use ($app) {
 
     // Sends the email
     $app['mailer']->send($mail);
-
+    
     // Adds send confirmation
     $app['session']->setFlash('notice', 'Your message has been successfully sent!');
 
     // Redirects to the contact page
     return $app->redirect('/contact.html');
 });
-
 
 return $app;
 
