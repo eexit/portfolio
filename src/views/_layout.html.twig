@@ -50,11 +50,14 @@
         {% block content %}{% endblock %}
         {% if app.debug %}
             <script type="text/javascript" src="{{ app.domain }}/ui/js/src/jquery.min.js"></script>
+            <script type="text/javascript" src="{{ app.domain }}/ui/js/src/jquery.ui-min.js"></script>
             <script type="text/javascript" src="{{ app.domain }}/ui/js/src/jquery.tools.min.js"></script>
             <script type="text/javascript" src="{{ app.domain }}/ui/js/src/jquery.mousewheel.js"></script>
             <script type="text/javascript" src="{{ app.domain }}/ui/js/src/jquery.getscrollbarwidth.js"></script>
             <script type="text/javascript" src="{{ app.domain }}/ui/js/src/jquery.sizes.min.js"></script>
             <script type="text/javascript" src="{{ app.domain }}/ui/js/src/jquery.lazyload.min.js"></script>
+            <script type="text/javascript" src="{{ app.domain }}/ui/js/src/jquery.scrollto-min.js"></script>
+            <script type="text/javascript" src="{{ app.domain }}/ui/js/src/jquery.localscroll-min.js"></script>
             <script type="text/javascript" src="{{ app.domain }}/ui/js/src/jquery.easing.1.3.js"></script>
             <script type="text/javascript" src="{{ app.domain }}/ui/js/src/portfolio.js"></script>
         {% else %}

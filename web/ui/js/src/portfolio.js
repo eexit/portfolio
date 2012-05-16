@@ -53,7 +53,8 @@
             // Local settings
             var settings = $.extend({
                 delay   : 2000,
-                speed   : 1000
+                speed   : 1000,
+                callback: null
             }, options);
 
             // Available actions
@@ -96,7 +97,7 @@
                         }
                     });
                     // Fancy display
-                    $.portfolio.settings.slider().delay(settings.delay).fadeIn(settings.speed);
+                    $.portfolio.settings.slider().delay(settings.delay).fadeIn(settings.speed, settings.callback);
                     $.portfolio.settings.dragme().delay(settings.delay).fadeIn(settings.speed);
                     break;
 
@@ -121,7 +122,11 @@
                 default:
                     console.warn('portfolio.sliderFactory(): No valid action provided!');
                     break;
-            }  
+            }
+
+            if ('function' == typeof(settings.callback)) {
+                //return settings.callback();
+            }
         },
 
         // Mouse handling factory (create, destroy actions)
@@ -289,7 +294,18 @@ $(document).ready(function() {
     $.portfolio.settings.scrollable().width(($.portfolio.settings.contents().outerWidth(true) * $.portfolio.settings.contents().length) + $.getScrollbarWidth());
     $.portfolio.settings.contents().css('float', 'left');
     $.portfolio.settings.contents().css('height', $.portfolio.settings.header().height());
-    $.portfolio.settings.handler().delay(2000).portfolio('sliderFactory', 'create');
+    $.portfolio.settings.handler().delay(2000).portfolio('sliderFactory', 'create', {
+        callback: function() {
+            $.portfolio.settings.handle().effect('bounce', {
+                direction: 'right',
+                distance: 50
+            }, 300, function() {
+                $.portfolio.settings.handle().effect('highlight', {
+                    color: 'yellow'
+                }, 300);
+            });
+        }
+    });
     $.portfolio.settings.handle().css('left', 0);
     $(document).portfolio('mouseGestureFactory', 'create');
     $(document).portfolio('kbFactory', 'create');

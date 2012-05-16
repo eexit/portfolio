@@ -6,7 +6,7 @@
         {% set path             = app['smak.portfolio.public_path'] ~ context.set.smak_subpath ~ '/' ~ context.set.getSplInfo().getBasename() ~ '/' ~ photo.getBasename() %}
 
         {#
-        <img src="{{ domain }}/ui/img/image-loading.gif" data-original="{{ path }}" data-width="{{ photo.getWidth() }}" data-height="{{ photo.getHeight() }}" class="lazy" title="{{ title|default(default_title) }}" alt="{{ alt|default(default_alt) }}" width="400" height="64" />
+        <img src="{{ app.domain }}/ui/img/image-loading.gif" data-original="{{ path }}" data-width="{{ photo.getWidth() }}" data-height="{{ photo.getHeight() }}" class="lazy" title="{{ title|default(default_title) }}" alt="{{ alt|default(default_alt) }}" {{ photo.getHtmlAttr()|raw }} />
         <noscript><img src="{{ path }}" title="{{ title|default(default_title) }}" alt="{{ alt|default(default_alt) }}" {{ photo.getHtmlAttr()|raw }} /></noscript>
         #}
         <img src="{{ path }}" title="{{ title|default(default_title)|raw }}" alt="{{ alt|default(default_alt) }}" {{ photo.getHtmlAttr()|raw }} />
