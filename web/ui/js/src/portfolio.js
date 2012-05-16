@@ -5,7 +5,7 @@
 
     // Global settings
     $.portfolio.settings = {
-        header      : function() { return $('header.loadme') },
+        header      : function() { return $('header') },
         loader      : function() { return $('#loader') },
         dragme_e    : function() { return $('<img src="/ui/img/dragme.png" id="dragme" alt="drag me" title="drag the handle to scroll" width="75" height="75" />') },
         dragme      : function() { return $('#dragme') },
@@ -26,10 +26,21 @@
             // Local settings
             var settings = $.extend({
                 delay   : 200,
-                speed   : 200
+                speed   : 200,
+                callback: null
             }, options);
 
             var d = 0;
+
+            if ('function' == typeof(settings.callback)) {
+                $(this).each(function() {
+                    $(this).delay(d).fadeIn(settings.speed);
+                    d += settings.delay;
+                });
+                
+                return settings.callback();
+            }
+            
             return $(this).each(function() {
                 $(this).delay(d).fadeIn(settings.speed);
                 d += settings.delay;
@@ -226,27 +237,47 @@
 
     // View helper
     $.fn.portfolio.isViewportBuildable = function() {
-        return !( $.portfolio.settings.scrollwrap().length > 0 && (($(window).width() + $.getScrollbarWidth()) <= 560 || $(window).height() <= 450));
+        return !(200 == Math.abs($.portfolio.settings.header().margin().left));
     };
 
 })(jQuery);
 
-$(window).load(function() {
-    if (!$.fn.portfolio.isViewportBuildable()) {
-        $.portfolio.settings.loader().hide();
+$(document).ready(function() {
+    /*
+    $.localScroll.hash({
+        hash: true
+    });
+    **/
+    $('#top').click(function(event) {
+        event.preventDefault();
+        $('html,body').animate({scrollTop: 0}, 2000, 'easeOutSine');
+    });
+
+    $('a[href^="#"][href!="#"]').click(function(event) {     
+        event.preventDefault();
+        $('html,body').animate({scrollTop:$(this.hash).offset().top}, 1000, 'easeOutSine');
+    });
+
+    // If the viewport is considered as non buildable
+    if (false == $.fn.portfolio.isViewportBuildable()) {
+        $.portfolio.settings.loader().fadeOut('slow', function() {
+            $('header nav').slideDown('slow', function() {
+                $('article').portfolio('displayContents');
+            });
+        });
         return;
     }
-    var h_pos = $.portfolio.settings.header().position();
-    if (h_pos) {
-        $.portfolio.settings.header().css('left', h_pos.left).animate({'left': '4em'}, 'slow', 'easeOutCirc');
-    }
-    $.portfolio.settings.loader().fadeOut('slow');
-    $.portfolio.settings.handle().css('left', 0);
-});
 
-$(document).ready(function() {
-    $('header nav').delay(2000).slideDown('slow');
-    $('article').delay(2000).portfolio('displayContents');
+    // Needs to do that for Webkit browsers
+    $.portfolio.settings.header().css('left', $.portfolio.settings.header().position().left);
+
+    $.portfolio.settings.header().animate({'left': '4em'}, 'slow', 'easeOutCirc', function() {
+        $.portfolio.settings.loader().fadeOut('slow', function() {
+            $('header nav').slideDown('slow', function() {
+                $('article').portfolio('displayContents');
+            });
+        });
+    });
 
     /*
     $('img.lazy').show().lazyload({
@@ -255,29 +286,17 @@ $(document).ready(function() {
     });
     */
 
-    if ($.fn.portfolio.isViewportBuildable()) {
-        $.portfolio.settings.scrollable().width(($.portfolio.settings.contents().outerWidth(true) * $.portfolio.settings.contents().length) + $.getScrollbarWidth());
-        $.portfolio.settings.contents().css('float', 'left');
-        $.portfolio.settings.contents().css('height', $.portfolio.settings.header().height());
-        $.portfolio.settings.handler().delay(2000).portfolio('sliderFactory', 'create');
-        $(document).portfolio('mouseGestureFactory', 'create');
-        $(document).portfolio('kbFactory', 'create');
-    }
+    $.portfolio.settings.scrollable().width(($.portfolio.settings.contents().outerWidth(true) * $.portfolio.settings.contents().length) + $.getScrollbarWidth());
+    $.portfolio.settings.contents().css('float', 'left');
+    $.portfolio.settings.handle().css('left', 0);
+    $.portfolio.settings.contents().css('height', $.portfolio.settings.header().height());
+    $.portfolio.settings.handler().delay(2000).portfolio('sliderFactory', 'create');
+    $(document).portfolio('mouseGestureFactory', 'create');
+    $(document).portfolio('kbFactory', 'create');
 });
 
 $(window).resize(function() {
-    if ($.fn.portfolio.isViewportBuildable()) {
-        $.portfolio.settings.header().css('left', '4em');
-        $.portfolio.settings.scrollable().width(($.portfolio.settings.contents().outerWidth(true) * $.portfolio.settings.contents().length) + $.getScrollbarWidth());
-        $.portfolio.settings.contents().css('float', 'left');
-        $.portfolio.settings.contents().css('height', $.portfolio.settings.header().height());
-        $('header nav').show();
-        $('article').show();
-        $.portfolio.settings.loader().hide();
-        $.portfolio.settings.handler().clearQueue().portfolio('sliderFactory', 'update');
-        $(document).clearQueue().portfolio('mouseGestureFactory', 'create');
-        $(document).clearQueue().portfolio('kbFactory', 'create');
-    } else {
+    if (false == $.fn.portfolio.isViewportBuildable()) {
         $.portfolio.settings.header().removeAttr('style');
         $('article').css('float', 'none');
         $('article').css('height', 'auto');
@@ -285,5 +304,17 @@ $(window).resize(function() {
         $.portfolio.settings.handler().clearQueue().portfolio('sliderFactory', 'destroy');
         $(document).clearQueue().portfolio('mouseGestureFactory', 'destroy');
         $(document).clearQueue().portfolio('kbFactory', 'destroy');
+        return;
     }
+
+    $.portfolio.settings.header().css('left', '4em');
+    $.portfolio.settings.scrollable().width(($.portfolio.settings.contents().outerWidth(true) * $.portfolio.settings.contents().length) + $.getScrollbarWidth());
+    $.portfolio.settings.contents().css('float', 'left');
+    $.portfolio.settings.contents().css('height', $.portfolio.settings.header().height());
+    $('header nav').show();
+    $('article').show();
+    $.portfolio.settings.loader().hide();
+    $.portfolio.settings.handler().clearQueue().portfolio('sliderFactory', 'update');
+    $(document).clearQueue().portfolio('mouseGestureFactory', 'create');
+    $(document).clearQueue().portfolio('kbFactory', 'create');
 });

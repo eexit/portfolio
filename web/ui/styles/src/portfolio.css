@@ -351,6 +351,10 @@ img.lazy {
         margin: 2em auto;
         float: none;
     }
+
+    article div[id] {
+        padding-top: 4em;
+    }
 }
 
 @media (max-width: 400px) {
