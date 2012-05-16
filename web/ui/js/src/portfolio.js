@@ -89,7 +89,7 @@
                             $.portfolio.settings.scrollable().css({left: -step});
 
                             // Fires the lazyloading
-                            // $(window).trigger('scroll');
+                            //$(window).trigger('scroll');
                         },
                         change: function(e, i) {
                             $.portfolio.settings.scrollable().animate({left: -i}, 'slow', 'easeInOutCirc');
@@ -248,6 +248,7 @@ $(document).ready(function() {
         hash: true
     });
     **/
+    
     $('#top').click(function(event) {
         event.preventDefault();
         $('html,body').animate({scrollTop: 0}, 2000, 'easeOutSine');
@@ -274,23 +275,22 @@ $(document).ready(function() {
     $.portfolio.settings.header().animate({'left': '4em'}, 'slow', 'easeOutCirc', function() {
         $.portfolio.settings.loader().fadeOut('slow', function() {
             $('header nav').slideDown('slow', function() {
-                $('article').portfolio('displayContents');
+                $('article').portfolio('displayContents'/*, {
+                    callback: function() {
+                        $('img.lazy').show().lazyload({
+                            effect: 'fadeIn'
+                        });
+                    }
+                }*/);
             });
         });
     });
 
-    /*
-    $('img.lazy').show().lazyload({
-        effect: 'fadeIn',
-        skip_invisible: false
-    });
-    */
-
     $.portfolio.settings.scrollable().width(($.portfolio.settings.contents().outerWidth(true) * $.portfolio.settings.contents().length) + $.getScrollbarWidth());
     $.portfolio.settings.contents().css('float', 'left');
-    $.portfolio.settings.handle().css('left', 0);
     $.portfolio.settings.contents().css('height', $.portfolio.settings.header().height());
     $.portfolio.settings.handler().delay(2000).portfolio('sliderFactory', 'create');
+    $.portfolio.settings.handle().css('left', 0);
     $(document).portfolio('mouseGestureFactory', 'create');
     $(document).portfolio('kbFactory', 'create');
 });
