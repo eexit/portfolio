@@ -11,10 +11,10 @@ Vous pourrez trouver plus d'informations sur [la page d'introduction](http://blo
 3. [Jouons avec Silex](http://blog.eexit.net/2011/06/php-projet-silex-jouons-avec-silex.html)
 4. [Ecriture de tests fonctionnels](http://blog.eexit.net/2011/08/php-projet-silex-ecriture-de-tests-fonctionnels.html)
 5. [TDD pour le code métier](http://blog.eexit.net/2011/11/php-projet-silex-tdd-pour-le-code-metier.html)
-6. Templating
+6. [Templating](http://blog.eexit.net/2012/05/php-projet-silex-templating.html)
 
 --
 
-Copyright (c) 2011, Joris Berthelot
+Copyright (c) 2011-2012, Joris Berthelot
 
 Joris Berthelot <joris@berthelot.tel>
