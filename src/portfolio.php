@@ -12,9 +12,9 @@ use Symfony\Component\HttpFoundation\Response;
 // User info for email
 $app['get_client_info'] = $app->protect(function() use ($app) {
     return array(
-        'ip'        => $app['request']->server->get('REMOTE_ADDR'),
-        'date'      => date('r', $app['request']->server->get('REQUEST_TIME')),
-        'agent'     => $app['request']->server->get('HTTP_USER_AGENT')
+        'ip'    => $app['request']->server->get('REMOTE_ADDR'),
+        'date'  => date('r', $app['request']->server->get('REQUEST_TIME')),
+        'agent' => $app['request']->server->get('HTTP_USER_AGENT')
     );
 });
 
@@ -23,12 +23,12 @@ $app['twig.template_loader'] = $app->protect(function($template_name) use ($app)
 
     // Returns immediately the current time when in debug mod
     if ($app['debug']) {
-        return time();
+        return;
     }
 
     // Gets the cache file and its modified time
-    $cache = $app['twig']->getCacheFilename($template_name);
-    $cache_time = is_file($cache) ? filemtime($cache) : 0;
+    $cache      = $app['twig']->getCacheFilename($template_name);
+    $cache_time = is_file($cache) ? filectime($cache) : 0;
 
     // If there is a newer version of the template
     if (false === $app['twig']->isTemplateFresh($template_name, $cache_time)) {
@@ -38,13 +38,7 @@ $app['twig.template_loader'] = $app->protect(function($template_name) use ($app)
 
         // Flushes the application HTTP cache for the current URI
         $app['http_cache']->getStore()->invalidate($app['request']);
-
-        // Returns the cache modified file time (as generated now)
-        return time();
     }
-
-    // Returns the template modified time
-    return $cache_time;
 });
 
 // This closure is the core of the application. It fetch all sets and order them in the right way
@@ -71,7 +65,7 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
 
     while ($sets->valid()) {
 
-        $set = $sets->current();
+        $set           = $sets->current();
         $smak_template = $set->getTemplate();
 
         // If there is no template file or the set has no content
@@ -82,14 +76,12 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
         }
 
         // Template view helpers
-        $set->smak_subpath = dirname(substr($set->getSplInfo()->getRealPath(), strlen(realpath($app['smak.portfolio.content_path']))));
-        $set->twig_subpath = sprintf('%s/%s/%s', $set->smak_subpath, $set->getSplInfo()->getBasename(), $smak_template->getBasename());
-
+        $set->smak_subpath   = dirname(substr($set->getSplInfo()->getRealPath(), strlen(realpath($app['smak.portfolio.content_path']))));
+        $set->twig_subpath   = sprintf('%s/%s/%s', $set->smak_subpath, $set->getSplInfo()->getBasename(), $smak_template->getBasename());
+        $set->template_mtime = filemtime($app['smak.portfolio.content_path'] . $set->twig_subpath);
+        
         // Adds a formatted name for routes (suppresses 00- if the set starts by 00-)
-        $set->link_name = preg_match('/^00/', $set->name) ?substr($set->name, 3) : $set->name;
-
-        // Template last-mod time
-        $template_mtime = $app['twig.template_loader']($set->twig_subpath);
+        $set->link_name      = preg_match('/^00/', $set->name) ?substr($set->name, 3) : $set->name;
 
         // Checks if the fresh flag parameter is enabled
         if ($app['smak.portfolio.enable_fresh_flag']) {
@@ -97,7 +89,7 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
             // Set the set fresh if it is
             $freshness = new DateTime('now');
             $freshness->sub(new DateInterval($app['smak.portfolio.fresh_flag_interval']));
-            $set->is_fresh = ($set->getTemplate()->getMTime() >= $freshness->getTimestamp());
+            $set->is_fresh = ($smak_template->getMTime() >= $freshness->getTimestamp());
         }
 
         // As ArrayIterator::offsetUnset() resets the pointer, this condition avoids duplicates in the result array
@@ -126,12 +118,16 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
 
 // Index page
 $app->get('/', function() use ($app) {
-    $template_name = 'index.html.twig';
-    $cache_headers = $app['cache.defaults'];
-    $sets = $app['smak.portfolio.set_provider']();
+    $template_name    = 'index.html.twig';
+    $template_abspath = $app['twig.content_path'] . DIRECTORY_SEPARATOR . $template_name;
+    $cache_headers    = $app['cache.defaults'];
+    $sets             = $app['smak.portfolio.set_provider']();
+
+    // Loads the template
+    $app['twig.template_loader']($template_name);
 
     // Updates the Last-Modified HTTP header
-    $cache_headers['Last-Modified'] = date('r', $app['twig.template_loader']($template_name));
+    $cache_headers['Last-Modified'] = date('r', filemtime($template_abspath));
 
     // Builds the response
     $response = $app['twig']->render($template_name, array(
@@ -144,8 +140,9 @@ $app->get('/', function() use ($app) {
 
 // Sets by year page
 $app->get('/{year}.html', function($year) use ($app) {
-    $template_name = 'index.html.twig';
-    $cache_headers = $app['cache.defaults'];
+    $template_name    = 'index.html.twig';
+    $template_abspath = $app['twig.content_path'] . DIRECTORY_SEPARATOR . $template_name;
+    $cache_headers    = $app['cache.defaults'];
 
     // Gets sets and filters for the requested year
     $sets = array_filter($app['smak.portfolio.set_provider'](), function(Set $set) use ($app, $year) {
@@ -157,8 +154,11 @@ $app->get('/{year}.html', function($year) use ($app) {
         return $app->abort(404);
     }
 
+    // Loads the template
+    $app['twig.template_loader']($template_name);
+
     // Updates the Last-Modified HTTP header
-    $cache_headers['Last-Modified'] = date('r', $app['twig.template_loader']($template_name));
+    $cache_headers['Last-Modified'] = date('r', filemtime($template_abspath));
 
     // Builds the response
     $response = $app['twig']->render($template_name, array(
@@ -210,16 +210,16 @@ $app->get('/{year}/{set_name}.html', function($year, $set_name) use ($app) {
     $nav['next'] = 0 < $sets->key() ? $sets[$sets->key() - 1] : null;
     $nav['prev'] = count($sets) > $sets->key() ? $sets[$sets->key() + 1] : null;
 
-    // Loads and gets the template age
-    $template_age = $app['twig.template_loader']($set->twig_subpath);
+    // Loads the template
+    $app['twig.template_loader']($set->twig_subpath);
 
     // Updates the Last-Modified HTTP header
-    $cache_headers['Last-Modified'] = date('r', $template_age);
+    $cache_headers['Last-Modified'] = date('r', $set->template_mtime);
 
     // Builds the response
     $response = $app['twig']->render($set->twig_subpath, array(
         'standalone'    => true,
-        'last_mod'      => date('F jS, Y', $template_age),
+        'last_mod'      => date('F jS, Y', $set->template_mtime),
         'set'           => $set,
         'nav'           => $nav
     ));
@@ -235,11 +235,13 @@ $app->get('/{year}/{set_name}.html', function($year, $set_name) use ($app) {
 
 // About page
 $app->get('/about.html', function() use ($app) {
-    $template_name = 'about.html.twig';
-    $cache_headers = $app['cache.defaults'];
+    $template_name    = 'about.html.twig';
+    $template_abspath = $app['twig.content_path'] . DIRECTORY_SEPARATOR . $template_name;
+    $template_age     = filemtime($template_abspath);
+    $cache_headers    = $app['cache.defaults'];
 
-    // Loads and gets the template age
-    $template_age = $app['twig.template_loader']($template_name);
+    // Loads the template
+    $app['twig.template_loader']($template_name);
 
     // Updates the Last-Modified HTTP header
     $cache_headers['Last-Modified'] = date('r', $template_age);
@@ -335,5 +337,3 @@ $app->post('/contact.html', function() use ($app) {
 });
 
 return $app;
-
-?>

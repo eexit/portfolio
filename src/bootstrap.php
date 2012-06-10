@@ -9,10 +9,11 @@ require_once __DIR__ . '/../vendor/Silex/silex.phar';
 $app = new Silex\Application();
 
 // Application settins
-$app['debug']         = false;
-$app['cache.max_age'] = 3600 * 24 * 90;
-$app['cache.expires'] = 3600 * 24 * 90;
-$app['cache.dir']     = __DIR__ . '/../cache';
+$app['debug']             = false;
+$app['cache.max_age']     = 3600 * 24 * 90;
+$app['cache.expires']     = 3600 * 24 * 90;
+$app['cache.path']        = __DIR__ . '/../cache';
+$app['twig.content_path'] = __DIR__ . '/views';
 $app['domain']        = 'http://photography.eexit.net';
 
 // Mailer settings
@@ -48,7 +49,7 @@ $app['session']->start();
 
 // Registers Symfony Cache component extension
 $app->register(new HttpCacheServiceProvider(), array(
-    'http_cache.cache_dir'  => $app['cache.dir'],
+    'http_cache.cache_dir'  => $app['cache.path'],
     'http_cache.options'    => array(
         'allow_reload'      => true,
         'allow_revalidate'  => true
@@ -59,24 +60,24 @@ $app->register(new ValidatorServiceProvider(), array(
    'validator.class_path'   => __DIR__ . '/../vendor/Symfony/src' 
 ));
 
+// Registers Smak Portfolio extension
+$app->register(new SmakServiceProvider(), array(
+    'smak.portfolio.content_path'   => __DIR__ . '/../web/content',
+    'smak.portfolio.public_path'    => $app['domain'] . '/content'
+));
+
 // Registers Twig extension
 $app->register(new TwigServiceProvider(), array(
     'twig.class_path'       => __DIR__ . '/../vendor/Twig/lib',
     'twig.path'             => array(
-        __DIR__ . '/views',
-        __DIR__ . '/../web/content'
+        $app['twig.content_path'],
+        $app['smak.portfolio.content_path']
     ),
     'twig.options'          => array(
         'charset'           => 'utf-8',
         'strict_variables'  => true,
-        'cache'             => $app['cache.dir']
+        'cache'             => $app['cache.path']
     )
-));
-
-// Registers Smak Portfolio extension
-$app->register(new SmakServiceProvider(), array(
-    'smak.portfolio.content_path' => __DIR__ . '/../web/content',
-    'smak.portfolio.public_path'  => $app['domain'] . '/content'
 ));
 
 // Registers Monolog extension
