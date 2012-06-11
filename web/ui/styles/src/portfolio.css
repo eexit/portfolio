@@ -262,6 +262,10 @@ input[type="range"] {
     display: none;
 }
 
+#handler {
+    display: none;
+}
+
 .handle {
     background-color: #222;
     height: 10px;

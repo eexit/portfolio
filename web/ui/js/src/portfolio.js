@@ -302,13 +302,16 @@ $(document).ready(function() {
             }, 300, function() {
                 $.portfolio.settings.handle().effect('highlight', {
                     color: 'yellow'
-                }, 300);
+                }, 300, function() {
+                    $(document).portfolio('mouseGestureFactory', 'create');
+                    $(document).portfolio('kbFactory', 'create');
+                });
             });
         }
     });
+
+    // Chrome bug
     $.portfolio.settings.handle().css('left', 0);
-    $(document).portfolio('mouseGestureFactory', 'create');
-    $(document).portfolio('kbFactory', 'create');
 });
 
 $(window).resize(function() {
@@ -333,4 +336,7 @@ $(window).resize(function() {
     $.portfolio.settings.handler().clearQueue().portfolio('sliderFactory', 'update');
     $(document).clearQueue().portfolio('mouseGestureFactory', 'create');
     $(document).clearQueue().portfolio('kbFactory', 'create');
+
+    // Chrome bug
+    $.portfolio.settings.handle().css('left', 0);
 });
