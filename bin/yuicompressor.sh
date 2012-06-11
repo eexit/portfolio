@@ -1,6 +1,6 @@
 #!/bin/sh
 path=`pwd`
-compressor=$path/vendor/yuicompressor/yuicompressor-2.4.7.jar
+compressor=$path/bin/yuicompressor-2.4.7.jar
 css_path=$path/web/ui/styles
 js_path=$path/web/ui/js
 echo "Portfolio UI Compression"

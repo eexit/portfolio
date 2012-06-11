@@ -1,0 +1,20 @@
+{
+    "license": "MIT",
+    "homepage": "http://photography.eexit.net",
+    "authors": [
+        {
+            "name" : "Joris Berthelot",
+            "email": "photography@eexit.net"
+        }
+    ],
+    "require": {
+        "php"                    : ">=5.3.10",
+        "silex/silex"            : "dev-master",
+        "monolog/monolog"        : "dev-master",
+        "symfony/finder"         : "dev-master",
+        "symfony/validator"      : "dev-master",
+        "twig/twig"              : "dev-master",
+        "swiftmailer/swiftmailer": "dev-master",
+        "eexit/smak"             : "dev-master"
+    }
+}

@@ -5,7 +5,7 @@ error_reporting(E_ALL ^ E_NOTICE);
 date_default_timezone_set('America/New_York');
 
 // Bootstraping
-require_once __DIR__ . '/../vendor/Silex/silex.phar';
+require_once __DIR__ . '/../vendor/autoload.php';
 $app = new Silex\Application();
 
 // Application settins
@@ -14,7 +14,7 @@ $app['cache.max_age']     = 3600 * 24 * 90;
 $app['cache.expires']     = 3600 * 24 * 90;
 $app['cache.path']        = __DIR__ . '/../cache';
 $app['twig.content_path'] = __DIR__ . '/views';
-$app['domain']        = 'http://photography.eexit.net';
+$app['domain']            = 'http://photography.eexit.net';
 
 // Mailer settings
 $app['mail.subject'] = 'New email from the portfolio!';
@@ -25,11 +25,6 @@ $app['mail.to']      = array('photography@eexit.net' => 'Joris Berthelot');
 $app['smak.portfolio.enable_fresh_flag']   = false;
 $app['smak.portfolio.fresh_flag_interval'] = 'P5D';
 $app['smak.portfolio.gallery_pattern']     = '/(\d{2})?([-[:alpha:]]+)/';
-
-$app['autoloader']->registerNamespaces(array(
-    'Symfony'   =>  __DIR__ . '/../vendor/Symfony/src',
-    'Smak'      =>  __DIR__ . '/../vendor/Smak/lib'
-));
 
 // Namespaces
 use Smak\Portfolio\Silex\Provider\SmakServiceProvider;
@@ -56,9 +51,7 @@ $app->register(new HttpCacheServiceProvider(), array(
 )));
 
 // Registers Symfony Validator component extension
-$app->register(new ValidatorServiceProvider(), array(
-   'validator.class_path'   => __DIR__ . '/../vendor/Symfony/src' 
-));
+$app->register(new ValidatorServiceProvider());
 
 // Registers Smak Portfolio extension
 $app->register(new SmakServiceProvider(), array(
@@ -68,7 +61,6 @@ $app->register(new SmakServiceProvider(), array(
 
 // Registers Twig extension
 $app->register(new TwigServiceProvider(), array(
-    'twig.class_path'       => __DIR__ . '/../vendor/Twig/lib',
     'twig.path'             => array(
         $app['twig.content_path'],
         $app['smak.portfolio.content_path']
@@ -82,7 +74,6 @@ $app->register(new TwigServiceProvider(), array(
 
 // Registers Monolog extension
 $app->register(new MonologServiceProvider(), array(
-    'monolog.class_path'    => __DIR__ . '/../vendor/monolog/src',
     'monolog.logfile'       => __DIR__ . '/../log/portfolio.log',
     'monolog.name'          => 'portfolio',
     'monolog.level'         => 300
@@ -90,7 +81,7 @@ $app->register(new MonologServiceProvider(), array(
 
 // Registers Swiftmailer extension
 $app->register(new SwiftmailerServiceProvider(), array(
-    'swiftmailer.class_path'    => __DIR__ . '/../vendor/swiftmailer/lib/classes'
+    'swiftmailer.class_path'    => __DIR__ . '/../vendor/swiftmailer/swiftmailer/lib/classes'
 ));
 $app['mailer'] = \Swift_Mailer::newInstance(\Swift_MailTransport::newInstance());
 
