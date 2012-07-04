@@ -44,11 +44,6 @@ $app['twig.template_loader'] = $app->protect(function($template_name) use ($app)
 // This closure is the core of the application. It fetch all sets and order them in the right way
 $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
 
-    // If the debug mod is disabled or and sets are already in session
-    if (!$app['debug'] && $app['session']->has('smak.portfolio.sets')) {
-        return $app['session']->get('smak.portfolio.sets');
-    }
-
     // Result set
     $results = array();
 
@@ -61,6 +56,14 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
     // Return false is there is nothing to show
     if (empty($sets)) {
         return null;
+    }
+
+    // If the debug mod is disabled or and sets are already in session
+    if (!$app['debug'] && $app['session']->has('smak.portfolio.sets')) {
+        $session_sets = $app['session']->get('smak.portfolio.sets');
+        if (count($sets) == count($session_sets)) {
+            return $session_sets;
+        }
     }
 
     while ($sets->valid()) {
