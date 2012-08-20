@@ -314,18 +314,21 @@ $app->post('/contact.html', function() use ($app) {
         ));
     }
 
+    $send_name    = $app->escape(stripslashes($field_data['name']));
+    $message_body = nl2br($app->escape(stripslashes($field_data['message'])));
+
     // Prepares the email
     $mail = \Swift_Message::newInstance()
         ->setSubject($app['mail.subject'])
         ->setSender($app['mail.sender'])
-        ->setFrom(array(trim($field_data['email']) => trim($field_data['name'])))
+        ->setFrom(array(trim($field_data['email']) => trim($send_name)))
         ->setReturnPath(trim($field_data['email']))
         ->setTo($app['mail.to'])
-        ->setCC(((bool) $app['request']->get('copy')) ? array($field_data['email'] => $field_data['name']) : null)
+        ->setCC(((bool) $app['request']->get('copy')) ? array($field_data['email'] => $send_name) : null)
         ->setBody($app['twig']->render('email.html.twig', array(
-            'sender'    => $app->escape($field_data['name']),
+            'sender'    => $send_name,
             'email'     => $app->escape($field_data['email']),
-            'message'   => nl2br($app->escape($field_data['message'])),
+            'message'   => $message_body,
             'user'      => $app['get_client_info']()
         )), 'text/html');
 
