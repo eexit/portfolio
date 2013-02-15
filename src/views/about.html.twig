@@ -28,7 +28,7 @@
                 <br>Design inspired from Cargo Collective <a href="http://cargocollective.com/nonfeed">nonfeed</a> design.
                 <br>Porfolio <a href="http://blog.eexit.net/2011/05/php-projet-silex-presentation-pre-requis-et-architecture.html">self-cooked</a> with <a href="http://silex.sensiolabs.org">Silex</a> and <a href="https://github.com/eexit/Smak">Smak</a> (<a href="https://github.com/eexit/Portfolio">sources</a>).
             </small></p>
-            <p><small>Updated on {{ last_mod }}.</small></p>
+            <p><small>Updated on {{ last_mod }}.{% if app.debug %} DEBUG_MOD{% endif %}</small></p>
         </article>
     </div>
 {% endblock %}
