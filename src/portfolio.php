@@ -336,7 +336,7 @@ $app->post('/contact.html', function() use ($app) {
     $app['mailer']->send($mail);
     
     // Adds send confirmation
-    $app['session']->setFlash('notice', 'Your message has been successfully sent!');
+    $app['session']->getFlashBag->add('notice', 'Your message has been successfully sent!');
 
     // Redirects to the contact page
     return $app->redirect('/contact.html');

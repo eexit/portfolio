@@ -1,4 +1,4 @@
-SetEnv DEV_ENV 0
+SetEnv DEV_ENV 1
 
 # Silex application rewrite rules
 RewriteEngine On

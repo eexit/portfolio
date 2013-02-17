@@ -1,6 +1,6 @@
 <?php
 
-ini_set('display_errors', 0);
+ini_set('display_errors', 1);
 error_reporting(E_ALL ^ E_NOTICE);
 date_default_timezone_set('America/New_York');
 
@@ -23,28 +23,19 @@ $app['mail.sender']  = 'no-reply@eexit.net';
 $app['mail.to']      = array('photography@eexit.net' => 'Joris Berthelot');
 
 // Content display settings
-$app['smak.portfolio.enable_fresh_flag']   = true;
+$app['smak.portfolio.enable_fresh_flag']   = false;
 $app['smak.portfolio.fresh_flag_interval'] = 'P30D';
 $app['smak.portfolio.gallery_pattern']     = '/(\d{2})?([-[:alpha:]]+)/';
 
-// Namespaces
-use Smak\Portfolio\Silex\Provider\SmakServiceProvider;
-
-use Silex\Provider\TwigServiceProvider;
-use Silex\Provider\SessionServiceProvider;
-use Silex\Provider\ValidatorServiceProvider;
-use Silex\Provider\MonologServiceProvider;
-use Silex\Provider\HttpCacheServiceProvider;
-use Silex\Provider\SwiftmailerServiceProvider;
-
+// Namespace
 use Symfony\Component\HttpFoundation\Response;
 
 // Registers Symfony Session component extension
-$app->register(new SessionServiceProvider());
+$app->register(new Silex\Provider\SessionServiceProvider());
 $app['session']->start();
 
 // Registers Symfony Cache component extension
-$app->register(new HttpCacheServiceProvider(), array(
+$app->register(new Silex\Provider\HttpCacheServiceProvider(), array(
     'http_cache.cache_dir'  => $app['cache.path'],
     'http_cache.options'    => array(
         'allow_reload'      => true,
@@ -52,16 +43,16 @@ $app->register(new HttpCacheServiceProvider(), array(
 )));
 
 // Registers Symfony Validator component extension
-$app->register(new ValidatorServiceProvider());
+$app->register(new Silex\Provider\ValidatorServiceProvider());
 
 // Registers Smak Portfolio extension
-$app->register(new SmakServiceProvider(), array(
+$app->register(new Smak\Portfolio\Silex\Provider\SmakServiceProvider(), array(
     'smak.portfolio.content_path'   => __DIR__ . '/../web/content',
     'smak.portfolio.public_path'    => $app['domain'] . '/content'
 ));
 
 // Registers Twig extension
-$app->register(new TwigServiceProvider(), array(
+$app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path'             => array(
         $app['twig.content_path'],
         $app['smak.portfolio.content_path']
@@ -74,14 +65,14 @@ $app->register(new TwigServiceProvider(), array(
 ));
 
 // Registers Monolog extension
-$app->register(new MonologServiceProvider(), array(
+$app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.logfile'       => __DIR__ . '/../log/portfolio.log',
     'monolog.name'          => 'portfolio',
     'monolog.level'         => 300
 ));
 
 // Registers Swiftmailer extension
-$app->register(new SwiftmailerServiceProvider(), array(
+$app->register(new Silex\Provider\SwiftmailerServiceProvider(), array(
     'swiftmailer.class_path'    => __DIR__ . '/../vendor/swiftmailer/swiftmailer/lib/classes'
 ));
 $app['mailer'] = \Swift_Mailer::newInstance(\Swift_MailTransport::newInstance());

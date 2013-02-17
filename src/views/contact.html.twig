@@ -5,9 +5,9 @@
     <div id="container">
         <article>
             <h2><a href="{{ app.domain }}/contact.html">Contact</a></h2>
-            {% if app.session.hasFlash('notice') %}
+            {% if app.session.getFlashBag.has('notice') %}
                 <div class="alert alert-success">
-                    <p>{{ app.session.flash('notice') }}</p>
+                    <p>{{ app.session.getFlashBag.get('notice') }}</p>
                 </div>
             {% else %}
                 <p>I'd love to receive an inquiry from you...</p>
