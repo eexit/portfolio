@@ -1,9 +1,16 @@
-SetEnv DEV_ENV 1
+SetEnv DEV_ENV 0
 
 # Silex application rewrite rules
 RewriteEngine On
+RewriteBase /
+
+RewriteCond %{DOCUMENT_ROOT}/maintenance.php -f
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ maintenance.php [R=302,L]
+
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ index.php [QSA,L]
+
 
 # Expiration configuration
 ExpiresActive On
