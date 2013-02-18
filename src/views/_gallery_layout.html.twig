@@ -6,7 +6,7 @@
     {% if standalone %}
         <div id="container">
     {% endif %}
-        <article class="loadme">
+        <article class="loadme {% if standalone %}single{% endif %}">
             <h2><a href="{{ app.domain ~ set.smak_subpath ~ '/' ~ set.link_name }}.html" title="{{ title|raw }}">{{ title|raw }}</a>{% if set.is_fresh is defined and set.is_fresh %} <small>NEW!</small>{% endif %}</h2>
             {% block intro %}{% endblock %}
             {% if standalone %}
