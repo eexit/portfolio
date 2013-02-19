@@ -1,8 +1,8 @@
 <?php
 
-ini_set('display_errors', 1);
+ini_set('display_errors', getenv('DEV_ENV'));
 error_reporting(E_ALL ^ E_NOTICE);
-date_default_timezone_set('America/New_York');
+date_default_timezone_set('Europe/Paris');
 
 // Bootstraping
 require_once __DIR__ . '/../vendor/autoload.php';
@@ -15,7 +15,7 @@ $app['cache.expires']     = 3600 * 24 * 90;
 $app['cache.path']        = __DIR__ . '/../cache';
 $app['twig.content_path'] = __DIR__ . '/views';
 $app['domain']            = 'http://photography.eexit.net';
-$app['domain']            = 'http://local.photo.eexit.net';
+// $app['domain']            = 'http://local.photo.eexit.net';
 
 // Mailer settings
 $app['mail.subject'] = 'New email from the portfolio!';
