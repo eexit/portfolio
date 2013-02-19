@@ -158,6 +158,11 @@ article {
     padding-bottom: 2em;
 }
 
+article.single {
+    width: 800px;
+    min-width: 400px;
+}
+
 article.loadme {
     display: none;
 }
@@ -208,7 +213,13 @@ article p a {
 }
 
 article img, article address {
+    width: 100%;
+    height: auto;
     margin: 1em 0;
+}
+
+article img {
+    background: #fff url(/ui/img/image-loading.gif) center center no-repeat;
 }
 
 article ul {
@@ -221,14 +232,14 @@ article li {
 
 article nav ul {
     padding: 1em 0;
-    width: 400px;
+    width: 800px;
 }
 
 article nav ul li {
     list-style-type: none;
     float: left;
     display: block;
-    width: 160px;
+    width: 360px;
     height: 1.4em;
     padding: 0 20px;
     text-align: center;
@@ -241,8 +252,11 @@ article form textarea {
 }
 
 address {
+    background: #eee url(/ui/img/stamp_fr.png) 90% center no-repeat;
+}
+
+address div {
     padding: 2em;
-    background: #eee url(/ui/img/stamp.png) 90% center no-repeat;
 }
 
 .range,
@@ -404,6 +418,42 @@ img.lazy {
 
     article div[id] {
         padding-top: 4em;
+    }
+}
+
+@media (min-width: 800px) and (max-height: 450px) {
+    header.loadme {
+        width: 600px;
+        margin: 0 0 0 -300px;
+    }
+}
+
+@media (min-width: 1000px) and (max-height: 450px) {
+    header.loadme {
+        width: 800px;
+        margin: 0 0 0 -400px;
+    }
+}
+
+@media (max-width: 1000px) {
+    article.single,
+    article nav ul {
+        width: 600px;
+    }
+
+    article nav ul li {
+        width: 260px;
+    }
+}
+
+@media (max-width: 800px) {
+    article.single,
+    article nav ul {
+        width: 400px;
+    }
+
+    article nav ul li {
+        width: 160px;
     }
 }
 

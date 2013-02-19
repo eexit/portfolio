@@ -136,7 +136,7 @@
             var actions = [ 'create', 'destroy' ];
 
             // Doesn't build the mouse handling as long as the slider is not built yet
-            if (action == actions[0] && !$.fn.portfolio('isBuilt')) {
+            if (action == actions[0] && ! $.fn.portfolio('isBuilt')) {
                 return;
             }
 
@@ -185,7 +185,7 @@
             var actions = [ 'create', 'destroy' ];
 
             // Doesn't build the keyboard handling as long as the slider is not built yet
-            if (action == actions[0] && !$.fn.portfolio('isBuilt')) {
+            if (action == actions[0] && ! $.fn.portfolio('isBuilt')) {
                 return;
             }
             
@@ -225,7 +225,7 @@
 
         // Checks if the slider is built already
         isBuilt: function() {
-            return !($.portfolio.settings.handler().data('rangeinput') == undefined);
+            return ! ($.portfolio.settings.handler().data('rangeinput') == undefined);
         }
     };
 
@@ -233,7 +233,7 @@
     $.fn.portfolio = function(method) {
         if ($.portfolio.methods[method]) {
             return $.portfolio.methods[method].apply($(this), Array.prototype.slice.call(arguments, 1));
-        } else if (typeof method === 'object' || !method) {
+        } else if (typeof method === 'object' || ! method) {
             return methods.init.apply($(this), arguments);
         } else {
             $.error('Method ' +  method + ' does not exist on jQuery.portfolio');
@@ -242,17 +242,17 @@
 
     // View helper
     $.fn.portfolio.isViewportBuildable = function() {
-        return !(200 == Math.abs($.portfolio.settings.header().margin().left));
+        return (200 > Math.abs($.portfolio.settings.header().margin().left));
     };
+
+    // View index helper
+    $.fn.portfolio.isIndex = function() {
+        return 0 == $('#container').length;
+    }
 
 })(jQuery);
 
-$(document).ready(function() {
-    /*
-    $.localScroll.hash({
-        hash: true
-    });
-    **/
+$(window).load(function() {
     
     $('#top').click(function(event) {
         event.preventDefault();
@@ -268,6 +268,12 @@ $(document).ready(function() {
     if (false == $.fn.portfolio.isViewportBuildable()) {
         $.portfolio.settings.loader().fadeOut('slow', function() {
             $('header nav').slideDown('slow', function() {
+
+                // Enables the HD articles view
+                 if ($.fn.portfolio.isIndex()) {
+                    $('article').addClass('single');
+                 }
+
                 $('article').portfolio('displayContents');
             });
         });
@@ -280,6 +286,7 @@ $(document).ready(function() {
     $.portfolio.settings.header().animate({'left': '4em'}, 'slow', 'easeOutCirc', function() {
         $.portfolio.settings.loader().fadeOut('slow', function() {
             $('header nav').slideDown('slow', function() {
+                
                 $('article').portfolio('displayContents'/*, {
                     callback: function() {
                         $('img.lazy').show().lazyload({
@@ -323,6 +330,11 @@ $(window).resize(function() {
         $.portfolio.settings.handler().clearQueue().portfolio('sliderFactory', 'destroy');
         $(document).clearQueue().portfolio('mouseGestureFactory', 'destroy');
         $(document).clearQueue().portfolio('kbFactory', 'destroy');
+        
+        // Enables the HD articles view if we are on the index view
+        if ($.fn.portfolio.isIndex() && false == $('article').hasClass('single')) {
+            $('article').addClass('single');
+        }
         return;
     }
 
@@ -336,6 +348,11 @@ $(window).resize(function() {
     $.portfolio.settings.handler().clearQueue().portfolio('sliderFactory', 'update');
     $(document).clearQueue().portfolio('mouseGestureFactory', 'create');
     $(document).clearQueue().portfolio('kbFactory', 'create');
+    
+    // Disables the HD articles view if we are on the index view
+    if ($.fn.portfolio.isIndex() && $('article').hasClass('single')) {
+        $('article').removeClass('single');
+    }
 
     // Chrome bug
     $.portfolio.settings.handle().css('left', 0);

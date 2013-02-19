@@ -1,5 +1,5 @@
 {# _layout.html.twig #}
-{#% spaceless %#}
+{% spaceless %}
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>
@@ -46,6 +46,7 @@
                     <li><a href="{{ app.domain }}/contact.html">contact</a></li>
                 </ul>
             </nav>
+            <noscript><p id="whynojs">Why no JavaScript?<br>= (</p></noscript>
         </header>
         {% block content %}{% endblock %}
         {% if app.debug %}
@@ -65,4 +66,4 @@
         {% endif %}
     </body>
 </html>
-{#% endspaceless %#}
+{% endspaceless %}
