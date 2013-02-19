@@ -6,7 +6,6 @@ RewriteBase /
 
 # Maintenance rewrite rule
 RewriteCond %{DOCUMENT_ROOT}/maintenance.php -f
-#RewriteCond %{REMOTE_ADDR} ^*$
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ maintenance.php [R=302,L]
 

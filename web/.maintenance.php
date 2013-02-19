@@ -1,3 +1,10 @@
+<?php
+date_default_timezone_set('Europe/Paris');
+header('Cache-Control: no-cache, no-store, must-revalidate'); // HTTP 1.1.
+header('Pragma: no-cache'); // HTTP 1.0.
+header('Expires: 0'); // Proxies.
+header('Content-Type: text/html;charset=UTF-8');
+?>
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
     <head>
