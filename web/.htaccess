@@ -7,7 +7,7 @@ RewriteBase /
 # Maintenance rewrite rule
 RewriteCond %{DOCUMENT_ROOT}/maintenance.php -f
 RewriteCond %{REQUEST_FILENAME} !-f
-RewriteRule ^(.*)$ maintenance.php [R=302,L]
+RewriteRule ^(.*)$ maintenance.php [L]
 
 # Application rewrite rule
 RewriteCond %{REQUEST_FILENAME} !-f
