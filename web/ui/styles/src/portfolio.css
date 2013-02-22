@@ -104,6 +104,11 @@ header a:link {
     text-align: center;
 }
 
+header nav {
+    position: relative;
+    top: 5.5em;
+}
+
 header #loader {
     display: none;
 }
@@ -354,6 +359,10 @@ img.lazy {
 }
 
 @media (max-height: 700px) {
+    header nav {
+        top: 2%;
+    }
+
     article h2 {
         height: 4em;
         line-height: 4em;
@@ -402,8 +411,9 @@ img.lazy {
         margin: 1em 2em;
     }
 
-    .loadme nav {
+    header nav {
         display: inline;
+        top: 0;
     }
 
     header nav ul li {
