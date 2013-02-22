@@ -247,7 +247,7 @@
 
     // View index helper
     $.fn.portfolio.isIndex = function() {
-        return 0 == $('#container').length;
+        return 0 == $.portfolio.settings.handler().length;
     }
 
 })(jQuery);
@@ -268,12 +268,7 @@ $(window).load(function() {
     if (false == $.fn.portfolio.isViewportBuildable()) {
         $.portfolio.settings.loader().fadeOut('slow', function() {
             $('header nav').slideDown('slow', function() {
-
-                // Enables the HD articles view
-                 if ($.fn.portfolio.isIndex()) {
-                    $('article').addClass('single');
-                 }
-
+                // Displays the content
                 $('article').portfolio('displayContents');
             });
         });
@@ -330,11 +325,6 @@ $(window).resize(function() {
         $.portfolio.settings.handler().clearQueue().portfolio('sliderFactory', 'destroy');
         $(document).clearQueue().portfolio('mouseGestureFactory', 'destroy');
         $(document).clearQueue().portfolio('kbFactory', 'destroy');
-        
-        // Enables the HD articles view if we are on the index view
-        if ($.fn.portfolio.isIndex() && false == $('article').hasClass('single')) {
-            $('article').addClass('single');
-        }
         return;
     }
 
@@ -348,11 +338,6 @@ $(window).resize(function() {
     $.portfolio.settings.handler().clearQueue().portfolio('sliderFactory', 'update');
     $(document).clearQueue().portfolio('mouseGestureFactory', 'create');
     $(document).clearQueue().portfolio('kbFactory', 'create');
-    
-    // Disables the HD articles view if we are on the index view
-    if ($.fn.portfolio.isIndex() && $('article').hasClass('single')) {
-        $('article').removeClass('single');
-    }
 
     // Chrome bug
     $.portfolio.settings.handle().css('left', 0);

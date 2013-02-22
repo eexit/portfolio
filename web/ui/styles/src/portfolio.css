@@ -230,12 +230,12 @@ article li {
     list-style-type: square;
 }
 
-article nav ul {
+article.single nav ul {
     padding: 1em 0;
     width: 800px;
 }
 
-article nav ul li {
+article.single nav ul li {
     list-style-type: none;
     float: left;
     display: block;
@@ -360,6 +360,28 @@ img.lazy {
     }
 }
 
+@media (max-width: 1000px) {
+    article.single,
+    article.single nav ul {
+        width: 600px;
+    }
+
+    article.single nav ul li {
+        width: 260px;
+    }
+}
+
+@media (max-width: 800px) {
+    article.single,
+    article.single nav ul {
+        width: 400px;
+    }
+
+    article.single nav ul li {
+        width: 160px;
+    }
+}
+
 @media (max-width: 560px), (max-height: 450px) {
     header,
     header.loadme {
@@ -411,49 +433,15 @@ img.lazy {
         margin-top: 4.5em;
     }
 
-    article {
+    article,
+    article.single {
+        width: 400px;
         margin: 2em auto;
         float: none;
     }
 
     article div[id] {
         padding-top: 4em;
-    }
-}
-
-@media (min-width: 800px) and (max-height: 450px) {
-    header.loadme {
-        width: 600px;
-        margin: 0 0 0 -300px;
-    }
-}
-
-@media (min-width: 1000px) and (max-height: 450px) {
-    header.loadme {
-        width: 800px;
-        margin: 0 0 0 -400px;
-    }
-}
-
-@media (max-width: 1000px) {
-    article.single,
-    article nav ul {
-        width: 600px;
-    }
-
-    article nav ul li {
-        width: 260px;
-    }
-}
-
-@media (max-width: 800px) {
-    article.single,
-    article nav ul {
-        width: 400px;
-    }
-
-    article nav ul li {
-        width: 160px;
     }
 }
 
