@@ -1,8 +1,10 @@
 {# _macros.html.twig #}
+
+{# Image display helper #}
 {% macro img(photo, context, title, alt) %}
-    {% if  photo is defined %}
+    {% if photo is defined %}
         {% set default_title    = 'Photography &copy; Joris Berthelot' %}
-        {% set default_alt      = 'This is a photography of the ' ~ context.title ~ ' collection' %}
+        {% set default_alt      = 'This is a photograph of the \'' ~ context.title ~ '\' article!' %}
         {% set path             = app['smak.portfolio.public_path'] ~ context.set.smak_subpath ~ '/' ~ context.set.getSplInfo().getBasename() ~ '/' ~ photo.getBasename() %}
 
         {#
@@ -10,5 +12,18 @@
         <noscript><img src="{{ path }}" title="{{ title|default(default_title) }}" alt="{{ alt|default(default_alt) }}" {{ photo.getHtmlAttr()|raw }} /></noscript>
         #}
         <img src="{{ path }}" title="{{ title|default(default_title)|raw }}" alt="{{ alt|default(default_alt) }}" {{ photo.getHtmlAttr()|raw }} />
+    {% endif %}
+{% endmacro %}
+
+{# Banner display helper #}
+{% macro banner(photo, context, title, alt) %}
+    {% if photo is defined %}
+        {% if context.standalone %}
+            {{ context.macros.img(context.set.getByName(photo), context, title, alt) }}
+        {% else %}
+            <a href="{{ app.domain ~ context.set.smak_subpath ~ '/' ~ context.set.link_name }}.html" title="{{ context.title|raw }}">
+                {{ context.macros.img(context.set.getByName('banner'), context, 'See the \'' ~ context.title ~ '\' article content', alt) }}
+            </a>
+        {% endif %}
     {% endif %}
 {% endmacro %}

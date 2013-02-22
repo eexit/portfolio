@@ -2,7 +2,7 @@
 {% extends '_gallery_layout.html.twig' %}
 {% set title = 'Set title' %}
 {% block intro %}
-    {{ macros.img(set.getById(0), _context, 'title', 'alt') }}
+    {{ macros.banner('banner_pic_name', _context, 'title', 'alt') }}
     <p>Introduction text</p>
 {% endblock %}
 {% block body %}
