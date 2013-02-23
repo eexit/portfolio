@@ -4,18 +4,18 @@ ini_set('display_errors', getenv('DEV_ENV'));
 error_reporting(E_ALL ^ E_NOTICE);
 date_default_timezone_set('Europe/Paris');
 
+// Namespace
+use Symfony\Component\HttpFoundation\Response;
+
 // Bootstraping
 require_once __DIR__ . '/../vendor/autoload.php';
 $app = new Silex\Application();
 
 // Application settins
-$app['debug']             = (bool) getenv('DEV_ENV');
-$app['cache.max_age']     = 3600 * 24 * 90;
-$app['cache.expires']     = 3600 * 24 * 90;
+$app['debug']             = ((bool) getenv('DEV_ENV') || '127.0.0.1' == $_SERVER['SERVER_ADDR']);
 $app['cache.path']        = __DIR__ . '/../cache';
 $app['twig.content_path'] = __DIR__ . '/views';
-$app['domain']            = 'http://photography.eexit.net';
-// $app['domain']            = 'http://local.photo.eexit.net';
+$app['cache.max_age']     = $app['cache.expires'] = 3600 * 24 * 90;
 
 // Mailer settings
 $app['mail.subject'] = 'New email from the portfolio!';
@@ -27,11 +27,18 @@ $app['smak.portfolio.enable_fresh_flag']   = false;
 $app['smak.portfolio.fresh_flag_interval'] = 'P30D';
 $app['smak.portfolio.gallery_pattern']     = '/(\d{2})?([-[:alpha:]]+)/';
 
-// Namespace
-use Symfony\Component\HttpFoundation\Response;
+if ($app['debug']) {
+    $app['domain']               = 'http://local.photo.eexit.net';
+    $app['session_storage_path'] = sys_get_temp_dir();
+} else {
+    $app['domain']               = 'http://photography.eexit.net';
+    $app['session_storage_path'] = '/homez.466/joris/phpsessions';
+}
 
 // Registers Symfony Session component extension
-$app->register(new Silex\Provider\SessionServiceProvider());
+$app->register(new Silex\Provider\SessionServiceProvider(array(
+    'session.storage.save_path' => $app['session_storage_path']
+)));
 $app['session']->start();
 
 // Registers Symfony Cache component extension
