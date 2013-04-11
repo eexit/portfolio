@@ -21,7 +21,7 @@
                     </nav>
             {% endif %}
             {% else %}
-                <p><small>{{ set.count() }} photos | <a href="{{ app.domain ~ set.smak_subpath ~ '/' ~ set.link_name }}.html" title="{{ title|raw }}">Take a look</a></small></p>
+                <p><small>{{ set.count() - 1 }} photos | <a href="{{ app.domain ~ set.smak_subpath ~ '/' ~ set.link_name }}.html" title="{{ title|raw }}">Take a look</a></small></p>
             {% endif %}
         </article>
     {% if standalone %}
