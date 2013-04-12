@@ -12,6 +12,7 @@
         scrollwrap  : function() { return $('#scrollwrap') },
         scrollable  : function() { return $('#scrollable') },
         contents    : function() { return $('#scrollable > article') },
+        article     : function() { return $('article') },
         handler     : function() { return $('#handler') },
         handle      : function() { return $('.handle') },
         slider      : function() { return $('.slider') }
@@ -223,6 +224,19 @@
             }
         },
 
+        // Hides the menu depending on the scroll position
+        menuToggler: function() {
+            $(window).scroll(function() {
+                if (1 > $.portfolio.settings.header().queue('fx').length) {
+                    if (0 == $(this).scrollTop()) {
+                        $.portfolio.settings.header().slideDown();
+                    } else if ($(this).scrollTop() >= 25) {
+                        $.portfolio.settings.header().slideUp();
+                    }
+                }
+            });
+        },
+
         // Checks if the slider is built already
         isBuilt: function() {
             return ! ($.portfolio.settings.handler().data('rangeinput') == undefined);
@@ -261,15 +275,19 @@ $(window).load(function() {
 
     $('a[href^="#"][href!="#"]').click(function(event) {     
         event.preventDefault();
-        $('html,body').animate({scrollTop:$(this.hash).offset().top}, 1000, 'easeOutSine');
+        $('html,body').animate({ scrollTop:$(this.hash).offset().top }, 1000, 'easeOutSine');
     });
 
     // If the viewport is considered as non buildable
     if (false == $.fn.portfolio.isViewportBuildable()) {
         $.portfolio.settings.loader().fadeOut('slow', function() {
-            $('header nav').slideDown('slow', function() {
+            $($.portfolio.settings.header().selector + ' nav').slideDown('slow', function() {
                 // Displays the content
-                $('article').portfolio('displayContents');
+                $.portfolio.settings.article().portfolio('displayContents', {
+                    callback: function() {
+                        $(document).portfolio('menuToggler');
+                    }
+                });
             });
         });
         return;
@@ -280,9 +298,9 @@ $(window).load(function() {
 
     $.portfolio.settings.header().animate({'left': '4em'}, 'slow', 'easeOutCirc', function() {
         $.portfolio.settings.loader().fadeOut('slow', function() {
-            $('header nav').slideDown('slow', function() {
+            $($.portfolio.settings.header().selector + ' nav').slideDown('slow', function() {
                 
-                $('article').portfolio('displayContents'/*, {
+                $.portfolio.settings.article().portfolio('displayContents'/*, {
                     callback: function() {
                         $('img.lazy').show().lazyload({
                             effect: 'fadeIn'
@@ -319,12 +337,13 @@ $(window).load(function() {
 $(window).resize(function() {
     if (false == $.fn.portfolio.isViewportBuildable()) {
         $.portfolio.settings.header().removeAttr('style');
-        $('article').css('float', 'none');
-        $('article').css('height', 'auto');
+        $.portfolio.settings.article().css('float', 'none');
+        $.portfolio.settings.article().css('height', 'auto');
         $.portfolio.settings.scrollable().removeAttr('style');
         $.portfolio.settings.handler().clearQueue().portfolio('sliderFactory', 'destroy');
         $(document).clearQueue().portfolio('mouseGestureFactory', 'destroy');
         $(document).clearQueue().portfolio('kbFactory', 'destroy');
+        $(document).portfolio('menuToggler');
         return;
     }
 
@@ -332,8 +351,8 @@ $(window).resize(function() {
     $.portfolio.settings.scrollable().width(($.portfolio.settings.contents().outerWidth(true) * $.portfolio.settings.contents().length) + $.getScrollbarWidth());
     $.portfolio.settings.contents().css('float', 'left');
     $.portfolio.settings.contents().css('height', $.portfolio.settings.header().height());
-    $('header nav').show();
-    $('article').show();
+    $($.portfolio.settings.header().selector + ' nav').show();
+    $.portfolio.settings.article().show();
     $.portfolio.settings.loader().hide();
     $.portfolio.settings.handler().clearQueue().portfolio('sliderFactory', 'update');
     $(document).clearQueue().portfolio('mouseGestureFactory', 'create');

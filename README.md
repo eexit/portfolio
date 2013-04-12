@@ -1,10 +1,22 @@
 photography.eexit.net - PHP Silex project
 =========================================
 
-Ce projet a pour but de refaire une peau neuve à mon portfolio en essayant d'utiliser le plus possibles les dernières techno' en terme de développement Web.
-Vous pourrez trouver plus d'informations sur [la page d'introduction](http://blog.eexit.net/2011/05/php-projet-silex-presentation-pre-requis-et-architecture.html).
+This project is the latest version of my photography portfolio. I tried to use the latest and best practices in term of Web development.
+The whole project is technically described step by step via my blog (in French) so if you are new to these technologies, it'd be easier for you to learn from there.
 
-## Roadmap
+### Technologies / Features
+
+ - PHP/Silex + Monolog + Swiftmailer + Symfony components
+ - PHP/Composer
+ - PHP/Smak (personal libs)
+ - PHP/Atoum
+ - PHP/Twig
+ - JS/jQuery
+ - CSS/Twitter Bootstrap
+ - Yahoo! YUI Compressor
+ - CSS Media Queries (responsive design)
+
+## Links / Steps
 
 1. [Pré-requis et architecture](http://blog.eexit.net/2011/05/php-projet-silex-presentation-pre-requis-et-architecture.html)
 2. [Configuration de Silex](http://blog.eexit.net/2011/05/php-projet-silex-configuration-de-silex.html)
@@ -13,8 +25,13 @@ Vous pourrez trouver plus d'informations sur [la page d'introduction](http://blo
 5. [TDD pour le code métier](http://blog.eexit.net/2011/11/php-projet-silex-tdd-pour-le-code-metier.html)
 6. [Templating](http://blog.eexit.net/2012/05/php-projet-silex-templating.html)
 
+### Known bugs
+
+ - Chrome: the slider content initial offset is broken with mousewheel
+ - All browsers: the header FX queue is improvable for mobile viewport
+
 --
 
-Copyright (c) 2011-2012, Joris Berthelot
+Copyright (c) 2011-2013, Joris Berthelot
 
 Joris Berthelot <joris@berthelot.tel>
