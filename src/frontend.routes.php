@@ -216,7 +216,7 @@ $frontend->post('/contact.html', function() use ($app) {
         ->setReturnPath(trim($field_data['email']))
         ->setTo($app['mail.to'])
         ->setCC(((bool) $app['request']->get('copy')) ? array($field_data['email'] => $send_name) : null)
-        ->setBody($app['twig']->render('email.html.twig', array(
+        ->setBody($app['twig']->render(CONTEXT . 'email.html.twig', array(
             'sender'    => $send_name,
             'email'     => $app->escape($field_data['email']),
             'message'   => $message_body,
