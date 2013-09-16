@@ -12,10 +12,10 @@ require_once __DIR__ . '/../vendor/autoload.php';
 $app = new Silex\Application();
 
 // Application settins
-$app['debug']             = ((bool) getenv('DEV_ENV') || '127.0.0.1' == $_SERVER['SERVER_ADDR']);
-$app['cache.path']        = __DIR__ . '/../cache';
-$app['twig.content_path'] = __DIR__ . '/views';
-$app['cache.max_age']     = $app['cache.expires'] = 3600 * 24 * 90;
+$app['debug']                      = ((bool) getenv('DEV_ENV') || '127.0.0.1' == $_SERVER['SERVER_ADDR']);
+$app['cache.path']                 = __DIR__ . '/../cache';
+$app['twig.content_path']          = __DIR__ . '/views';
+$app['cache.max_age']              = $app['cache.expires'] = 3600 * 24 * 90;
 
 // Mailer settings
 $app['mail.subject'] = 'New email from the portfolio!';
@@ -23,7 +23,7 @@ $app['mail.sender']  = 'no-reply@eexit.net';
 $app['mail.to']      = array('photography@eexit.net' => 'Joris Berthelot');
 
 // Content display settings
-$app['smak.portfolio.enable_fresh_flag']   = true;
+$app['smak.portfolio.enable_fresh_flag']   = false;
 $app['smak.portfolio.fresh_flag_interval'] = 'P30D';
 $app['smak.portfolio.gallery_pattern']     = '/(\d{2})?([-[:alpha:]]+)/';
 
@@ -73,7 +73,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
     'monolog.logfile'       => __DIR__ . '/../log/portfolio.log',
     'monolog.name'          => 'portfolio',
-    'monolog.level'         => 300
+    'monolog.level'         => 200
 ));
 
 // Registers Swiftmailer extension

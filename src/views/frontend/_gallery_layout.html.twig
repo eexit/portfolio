@@ -1,6 +1,6 @@
-{# _gallery_layout.html.twig #}
-{% extends standalone ? '_layout.html.twig' : '_set.html.twig' %}
-{% import '_macros.html.twig' as macros %}
+{# frontend/_gallery_layout.html.twig #}
+{% extends standalone ? 'frontend/_layout.html.twig' : 'frontend/_set.html.twig' %}
+{% import 'frontend/_macros.html.twig' as macros %}
 {% set header_attr = ' class="loadme"' %}
 {% block content %}
     {% if standalone %}
