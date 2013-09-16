@@ -7,7 +7,7 @@
             <h2><a href="{{ app.domain }}/contact.html">Contact</a></h2>
             {% if app.session.getFlashBag.has('notice') %}
                 <div class="alert alert-success">
-                    <p>{{ app.session.getFlashBag.get('notice') }}</p>
+                    <p>{{ app.session.getFlashBag.get('notice')|first }}</p>
                 </div>
             {% else %}
                 <p>I'd love to receive an inquiry from you...</p>
