@@ -23,22 +23,20 @@ $app['mail.sender']  = 'no-reply@eexit.net';
 $app['mail.to']      = array('photography@eexit.net' => 'Joris Berthelot');
 
 // Content display settings
-$app['smak.portfolio.enable_fresh_flag']   = false;
+$app['smak.portfolio.enable_fresh_flag']   = true;
 $app['smak.portfolio.fresh_flag_interval'] = 'P30D';
 $app['smak.portfolio.gallery_pattern']     = '/(\d{2})?([-[:alpha:]]+)/';
 
 if ($app['debug']) {
     $app['domain']               = 'http://local.photo.eexit.net';
-    $app['session_storage_path'] = sys_get_temp_dir();
+    require_once __DIR__ . '/debug.php';
 } else {
     $app['domain']               = 'http://photography.eexit.net';
-    $app['session_storage_path'] = '/homez.466/joris/phpsessions';
+    ini_set('session.save_path', '/homez.466/joris/phpsessions');
 }
 
 // Registers Symfony Session component extension
-$app->register(new Silex\Provider\SessionServiceProvider(array(
-    'session.storage.save_path' => $app['session_storage_path']
-)));
+$app->register(new Silex\Provider\SessionServiceProvider());
 $app['session']->start();
 
 // Registers Symfony Cache component extension
