@@ -10,11 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 $frontend = $app['controllers_factory'];
-define('CONTEXT', 'frontend/');
 
 // Index page
 $frontend->get('/', function() use ($app) {
-    $template_name    = CONTEXT . 'index.html.twig';
+    $template_name    = '@frontend/index.html.twig';
     $cache_headers    = $app['cache.defaults'];
     $sets             = $app['smak.portfolio.set_provider']();
 
@@ -35,7 +34,7 @@ $frontend->get('/', function() use ($app) {
 
 // Sets by year page
 $frontend->get('/{year}.html', function($year) use ($app) {
-    $template_name    = CONTEXT . 'index.html.twig';
+    $template_name    = '@frontend/index.html.twig';
     $cache_headers    = $app['cache.defaults'];
 
     // Gets sets and filters for the requested year
@@ -129,7 +128,7 @@ $frontend->get('/{year}/{set_name}.html', function($year, $set_name) use ($app) 
 
 // About page
 $frontend->get('/about.html', function() use ($app) {
-    $template_name    = CONTEXT . 'about.html.twig';
+    $template_name    = '@frontend/about.html.twig';
     $template_abspath = $app['twig.content_path'] . DIRECTORY_SEPARATOR . $template_name;
     $template_age     = filemtime($template_abspath);
     $cache_headers    = $app['cache.defaults'];
@@ -151,7 +150,7 @@ $frontend->get('/about.html', function() use ($app) {
 
 // Contact page (GET)
 $frontend->get('/contact.html', function() use ($app) {
-    $template_name = CONTEXT . 'contact.html.twig';
+    $template_name = '@frontend/contact.html.twig';
 
     // Loads and gets the template age
     $app['twig.template_loader']($template_name);
@@ -199,7 +198,7 @@ $frontend->post('/contact.html', function() use ($app) {
     
     // Returns to the form including errors
     if (!empty($violations_messages)) {
-        return $app['twig']->render(CONTEXT . 'contact.html.twig', array(
+        return $app['twig']->render('@frontend/contact.html.twig', array(
             'post'          => $field_data,
             'violations'    => $violations_messages
         ));
@@ -216,7 +215,7 @@ $frontend->post('/contact.html', function() use ($app) {
         ->setReturnPath(trim($field_data['email']))
         ->setTo($app['mail.to'])
         ->setCC(((bool) $app['request']->get('copy')) ? array($field_data['email'] => $send_name) : null)
-        ->setBody($app['twig']->render(CONTEXT . 'email.html.twig', array(
+        ->setBody($app['twig']->render('@frontend/email.html.twig', array(
             'sender'    => $send_name,
             'email'     => $app->escape($field_data['email']),
             'message'   => $message_body,

@@ -72,6 +72,8 @@ $app['smak.portfolio.set_provider'] = $app->protect(function() use ($app) {
         }
     }
 
+    clearstatcache();
+
     while ($sets->valid()) {
 
         $set           = $sets->current();

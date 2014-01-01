@@ -32,7 +32,7 @@ if ($app['debug']) {
     //require_once __DIR__ . '/debug.php';
 } else {
     $app['domain']               = 'http://photography.eexit.net';
-    ini_set('session.save_path', '/homez.466/joris/phpsessions');
+    // ini_set('session.save_path', '/homez.466/joris/phpsessions');
 }
 
 // Registers Symfony Session component extension
@@ -68,6 +68,7 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
         'cache'             => $app['cache.path']
     )
 ));
+$app['twig.loader.filesystem']->addPath($app['twig.content_path'] . '/frontend', 'frontend');
 
 // Registers Monolog extension
 $app->register(new Silex\Provider\MonologServiceProvider(), array(
