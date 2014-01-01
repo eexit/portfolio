@@ -59,11 +59,6 @@ q:after {
     content: close-quote;
 }
 
-blockquote {
-    margin: 2em;
-    border-color: #ddd;
-}
-
 header {
     position: fixed;
     width: 8em;
@@ -231,6 +226,17 @@ article ul {
     margin: 0 3em;
 }
 
+blockquote {
+    margin: 2em;
+    border-color: #ddd;
+    font-style: italic;
+}
+
+blockquote p {
+    font-size: 1em;
+    margin-left: 0;
+}
+
 article li {
     list-style-type: square;
 }
@@ -257,7 +263,7 @@ article form textarea {
 }
 
 address {
-    background: #eee url(/ui/img/stamp_fr.png) 90% center no-repeat;
+    background: #eee url(/ui/img/stamp_lille.png) 90% center no-repeat;
 }
 
 address div {
