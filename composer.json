@@ -1,7 +1,6 @@
 {
     "license": "MIT",
     "homepage": "http://photography.eexit.net",
-    "minimum-stability": "dev",
     "authors": [
         {
             "name" : "Joris Berthelot",
@@ -10,11 +9,11 @@
     ],
     "require": {
         "php"                    : ">=5.3.3",
-        "silex/silex"            : "1.*",
-        "monolog/monolog"        : ">=1.0.0",
+        "silex/silex"            : "~1.0",
+        "monolog/monolog"        : "~1.0",
         "symfony/validator"      : "~2.3",
-        "twig/twig"              : ">=1.8,<2.0-dev",
-        "swiftmailer/swiftmailer": ">=4.1.2,<4.2-dev",
+        "twig/twig"              : "~1.8",
+        "swiftmailer/swiftmailer": "~4.1.2",
         "eexit/smak"             : "dev-master"
     }
 }
